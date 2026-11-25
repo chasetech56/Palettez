@@ -42,7 +42,7 @@ Ready-to-paste copy and form answers for when the Google Play Console account is
 - **App Category:** `Art & Design`
 - **Tags:** `Design`, `Color palette`, `Typography`, `Layout`
 - **Contact Email:** *(Add developer support email)*
-- **Privacy Policy URL:** `https://<your-github-username>.github.io/palettez/privacy-policy.html`
+- **Privacy Policy URL:** `https://chasetech56.github.io/Palettez/privacy-policy.html`
 
 ---
 

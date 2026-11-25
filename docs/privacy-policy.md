@@ -42,4 +42,4 @@ Palettez is licensed under the **Apache License 2.0**. The source code is public
 ---
 
 ### 6. Contact
-If you have questions, feedback, or need assistance regarding this privacy policy, please open an issue on our [GitHub repository](https://github.com/app-palettez/palettez).
+If you have questions, feedback, or need assistance regarding this privacy policy, please open an issue on our [GitHub repository](https://github.com/chasetech56/Palettez).
