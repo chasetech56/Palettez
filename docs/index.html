@@ -846,21 +846,23 @@
   <main>
     <!-- Hero Section -->
     <section class="hero container">
-      <div class="hero-badge">
-        <span class="badge-dot" aria-hidden="true"></span>
-        <span>FREE &bull; OPEN SOURCE &bull; LOCAL-FIRST ANDROID APP</span>
-      </div>
+      <div class="hero-layout">
+        <div class="hero-copy">
+          <div class="hero-badge hero-stagger-1">
+            <span class="badge-dot" aria-hidden="true"></span>
+            <span>v1.1.0 LIVE &bull; OPEN SOURCE &bull; LOCAL-FIRST ANDROID</span>
+          </div>
 
-      <h1 class="hero-title">
-        THE DESIGNER'S<br>POCKET TOOLKIT
-      </h1>
+          <h1 class="hero-title hero-stagger-2">
+            THE DESIGNER'S<br>POCKET TOOLKIT
+          </h1>
 
-      <p class="hero-lead">
-        Extract vibrant photo palettes into 10-step OKLab color systems. Generate customizable column &amp; panel layouts. Specimen 1,960+ Google Fonts. Images never leave your phone. Zero tracking, zero ads.
-      </p>
+          <p class="hero-lead hero-stagger-3">
+            Extract vibrant photo palettes into 10-step OKLab color systems. Analyze poster grids on-device. Pair 1,960+ Google Fonts. Zero tracking, zero ads.
+          </p>
 
-      <!-- Download Action Card & Live Counter -->
-      <div class="download-card-wrapper">
+          <!-- Download Action Card & Live Counter -->
+          <div class="download-card-wrapper hero-stagger-4">
         <div class="download-cta-group">
           <a href="releases/palettez-v1.1.0.apk" download="palettez-v1.1.0.apk" class="btn-main-download" id="hero-download-btn" aria-label="Download Palettez APK version 1.1.0, 1.6 megabytes">
             <span class="download-icon-circle" aria-hidden="true">
@@ -905,6 +907,81 @@
             <span class="ticker-city">Recent:</span> Someone downloaded the APK from <span id="ticker-location">London, United Kingdom</span> <span id="ticker-time">4s ago</span>
           </div>
         </div>
+      </div>
+        </div>
+
+        <!-- Interactive Bold Edition Collage -->
+        <div class="hero-collage hero-stagger-3" aria-label="Interactive Palettez design system preview">
+          <div class="collage-card collage-type" id="collage-type-card" title="Click to cycle specimen typeface" role="button" tabindex="0">
+            <div style="font-family: Georgia, serif; font-size: 64px; font-weight: 700; line-height: 1;" id="collage-type-glyph">Aa</div>
+            <div>
+              <div style="font-size: 13px; font-weight: 700;" id="collage-type-name">Playfair Display</div>
+              <div style="font-size: 11px; opacity: 0.8; font-family: var(--font-mono);">Tap to cycle font</div>
+            </div>
+          </div>
+
+          <div class="collage-card collage-swatch" id="collage-swatch-card" data-hex="#F4C542" title="Click to copy #F4C542" role="button" tabindex="0">
+            <div style="font-family: var(--font-display); font-size: 28px; line-height: 1;">#F4C542</div>
+            <div style="font-family: var(--font-mono); font-size: 11px; opacity: 0.85;">0 &middot; 19 &middot; 73 &middot; 4</div>
+          </div>
+
+          <div class="collage-card collage-grid" title="Responsive 4-column grid preview">
+            <div class="collage-grid-bars">
+              <div class="collage-grid-bar"></div>
+              <div class="collage-grid-bar"></div>
+              <div class="collage-grid-bar"></div>
+              <div class="collage-grid-bar"></div>
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 11px; font-weight: 700; margin-top: 8px; display: flex; justify-content: space-between;">
+              <span>4 COLS</span>
+              <span>24 PX</span>
+            </div>
+          </div>
+
+          <div class="collage-card collage-mini-circle" title="Anton Display">
+            <div style="font-family: var(--font-display); font-size: 36px; line-height: 1;">Aa</div>
+          </div>
+
+          <div class="collage-card collage-lime-pill">
+            <span>&#10024; v1.1.0</span>
+            <span>&bull;</span>
+            <span>1.6 MB</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What's New in v1.1.0 -->
+    <section class="whats-new-section container" id="whats-new">
+      <div class="section-header" style="margin-bottom: 24px;">
+        <p class="section-subtitle">What's New in v1.1.0</p>
+        <h2 class="section-title">BUILT FOR REAL WORKFLOWS</h2>
+      </div>
+
+      <div class="whats-new-grid">
+        <article class="whats-new-card">
+          <span class="wn-pill">NEW · GRID ANALYSIS</span>
+          <h3 class="wn-title">Reverse-Engineer Posters</h3>
+          <p class="wn-desc">Upload any flyer or editorial layout to detect columns, margins, gutters, and matching panel families locally on-device.</p>
+        </article>
+
+        <article class="whats-new-card">
+          <span class="wn-pill">NEW · BRAND CARDS</span>
+          <h3 class="wn-title">16:9 &amp; 1:1 PNG Export</h3>
+          <p class="wn-desc">Generate presentation-ready brand identity cards with HEX, RGB, CMYK, HSL, OKLab values, and WCAG contrast badges.</p>
+        </article>
+
+        <article class="whats-new-card">
+          <span class="wn-pill">NEW · FONT PAIRINGS</span>
+          <h3 class="wn-title">Split Specimen Studio</h3>
+          <p class="wn-desc">Curated Google Fonts pairings with live dual typing, instant role swap (&rlarr;), and combined HTML/CSS + .ttf export.</p>
+        </article>
+
+        <article class="whats-new-card">
+          <span class="wn-pill">NEW · LOCAL BACKUP</span>
+          <h3 class="wn-title">Backup &amp; Auto-Updates</h3>
+          <p class="wn-desc">Export and restore your palettes, grids, and settings as a single local JSON file, plus automatic homepage update checks.</p>
+        </article>
       </div>
     </section>
 
@@ -1129,14 +1206,37 @@
       });
 
       // 4. Interactive Swatch Copy
-      document.querySelectorAll('.demo-swatch').forEach(swatch => {
+      document.querySelectorAll('.demo-swatch, #collage-swatch-card').forEach(swatch => {
         swatch.addEventListener('click', () => {
           const hex = swatch.getAttribute('data-hex');
           navigator.clipboard.writeText(hex).then(() => {
             showToast('Copied ' + hex);
+          }).catch(() => {
+            showToast('Swatch: ' + hex);
           });
         });
       });
+
+      // 4b. Interactive Collage Type Specimen Cycler
+      const typeCard = document.getElementById('collage-type-card');
+      const typeGlyph = document.getElementById('collage-type-glyph');
+      const typeName = document.getElementById('collage-type-name');
+      const COLLAGE_FONTS = [
+        { name: 'Playfair Display', css: 'Georgia, serif' },
+        { name: 'Anton', css: 'var(--font-display)' },
+        { name: 'JetBrains Mono', css: 'var(--font-mono)' },
+        { name: 'Figtree', css: 'var(--font-body)' }
+      ];
+      let collageFontIdx = 0;
+      if (typeCard && typeGlyph && typeName) {
+        typeCard.addEventListener('click', () => {
+          collageFontIdx = (collageFontIdx + 1) % COLLAGE_FONTS.length;
+          const next = COLLAGE_FONTS[collageFontIdx];
+          typeGlyph.style.fontFamily = next.css;
+          typeName.textContent = next.name;
+          showToast('Specimen: ' + next.name);
+        });
+      }
 
       // 5. Active Live Download Count Simulation & Ticker
       const counterEl = document.getElementById('live-counter');
