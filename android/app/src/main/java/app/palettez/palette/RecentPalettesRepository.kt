@@ -159,6 +159,24 @@ class RecentPalettesRepository(private val baseDir: File) {
     }
 
     @Synchronized
+    fun mergePalettes(imported: List<RecentPalette>): Int {
+        if (imported.isEmpty()) return 0
+        val current = getAll().toMutableList()
+        val existingIds = current.map { it.id }.toMutableSet()
+        var added = 0
+        for (item in imported) {
+            if (item.id !in existingIds && item.swatches.isNotEmpty()) {
+                current.add(item)
+                existingIds.add(item.id)
+                added++
+            }
+        }
+        val sorted = current.sortedByDescending { it.timestamp }.take(25)
+        writeAll(sorted)
+        return added
+    }
+
+    @Synchronized
     fun clearAll() {
         val current = getAll()
         current.forEach { item ->

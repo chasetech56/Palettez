@@ -2,6 +2,8 @@ package app.palettez.settings
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -40,7 +42,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import androidx.compose.ui.Alignment
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.compose.ui.Modifier
@@ -69,6 +78,7 @@ fun SettingsScreen(
     onReplayIntro: () -> Unit,
     onOpenWhatsNew: () -> Unit = {},
     onCheckForUpdates: () -> Unit = {},
+    onBackupRestored: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -76,8 +86,53 @@ fun SettingsScreen(
     val colors = PalettezTheme.colors
     val typography = PalettezTheme.typography
     val settings by vm.settings.collectAsState()
+    val scope = rememberCoroutineScope()
 
     var showLicensesDialog by remember { mutableStateOf(false) }
+
+    val exportBackupLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            val ok = withContext(Dispatchers.IO) {
+                runCatching {
+                    val json = LocalBackupManager.exportBackupJson(context, settings)
+                    context.contentResolver.openOutputStream(uri)?.use { out ->
+                        out.write(json.toByteArray(Charsets.UTF_8))
+                    } ?: return@runCatching false
+                    true
+                }.getOrDefault(false)
+            }
+            message(if (ok) "Backup saved to device" else "Couldn't write backup file")
+        }
+    }
+
+    val restoreBackupLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            val summary = withContext(Dispatchers.IO) {
+                runCatching {
+                    val json = context.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() }
+                        ?: return@runCatching null
+                    LocalBackupManager.restoreBackupJson(context, vm.repository, json)
+                }.getOrNull()
+            }
+            if (summary != null) {
+                onBackupRestored()
+                val msg = if (summary.palettesRestored > 0) {
+                    "Restored settings & ${summary.palettesRestored} palette(s)"
+                } else {
+                    "Restored settings & grid"
+                }
+                message(msg)
+            } else {
+                message("Invalid or unreadable Palettez backup file")
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         vm.refreshCacheSize()
@@ -423,6 +478,69 @@ fun SettingsScreen(
                     ) {
                         Text(
                             text = "Clear",
+                            style = typography.body.copy(fontWeight = FontWeight.SemiBold, fontSize = 14.sp),
+                            color = colors.ink,
+                        )
+                    }
+                }
+            }
+        }
+
+        // 3.5 BACKUP & RESTORE
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text(
+                text = "BACKUP & RESTORE",
+                style = typography.section.copy(fontSize = 20.sp),
+                color = colors.ink,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(colors.surface)
+                    .padding(horizontal = 18.dp, vertical = 14.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = "Export your saved palettes, grid settings, and preferences as a local JSON file, or restore from an existing backup.",
+                    style = typography.caption.copy(color = colors.inkSecondary, fontSize = 13.sp, lineHeight = 18.sp),
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(colors.ink)
+                            .clickable {
+                                val stamp = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+                                exportBackupLauncher.launch("palettez-backup-$stamp.json")
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Export backup",
+                            style = typography.body.copy(fontWeight = FontWeight.SemiBold, fontSize = 14.sp),
+                            color = colors.onInk,
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                            .border(1.5.dp, colors.line, RoundedCornerShape(24.dp))
+                            .clickable {
+                                restoreBackupLauncher.launch(arrayOf("application/json", "text/plain", "*/*"))
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Restore",
                             style = typography.body.copy(fontWeight = FontWeight.SemiBold, fontSize = 14.sp),
                             color = colors.ink,
                         )

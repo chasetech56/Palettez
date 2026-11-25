@@ -157,6 +157,9 @@ fun PalettezApp(
                                 toastState.show("You're on the latest build!")
                             }
                         }
+                    },
+                    onBackupRestored = {
+                        paletteViewModel.loadRecents()
                     }
                 )
             } else {
