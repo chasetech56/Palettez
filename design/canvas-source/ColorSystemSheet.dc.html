@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Palettez – Color system reference</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#151515}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="width: 1440px; min-height: 2400px; box-sizing: border-box; padding: 72px 64px; background: #EFE9DF; color: #151515; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; gap: 56px">
+
+  <header style="display: flex; gap: 56px; align-items: flex-end">
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 22px">
+      <p style="margin: 0; font-size: 18px; line-height: 24px; font-weight: 600; color: #5E584F">Palettez · Palette · Presets</p>
+      <h1 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 120px; line-height: 116px; letter-spacing: 1px">COLOR SYSTEM</h1>
+      <p style="margin: 0; max-width: 760px; font-size: 21px; line-height: 31px; color: #3A3631">Every palette, whether it's a preset or pulled from your own photo, becomes a working color system: five roles, a ten-step scale for each color, matching harmonies, contrast checks and code you can paste into a project.</p>
+    </div>
+  </header>
+
+  <section aria-label="How it works" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+    <sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+      <div style="{{s.style}}">
+        <span style="font-family: Anton, Impact, sans-serif; font-size: 44px; line-height: 48px">{{s.n}}</span>
+        <span style="font-size: 20px; line-height: 26px; font-weight: 700">{{s.title}}</span>
+        <span style="font-size: 16px; line-height: 23px">{{s.text}}</span>
+      </div>
+    </sc-for>
+  </section>
+
+  <section aria-label="Presets" style="display: flex; flex-direction: column; gap: 22px; border-top: 2px solid #151515; padding-top: 28px">
+    <div style="display: flex; align-items: baseline; gap: 24px">
+      <h2 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 56px; line-height: 60px; letter-spacing: 0.5px">PRESETS</h2>
+      <p style="margin: 0; font-size: 18px; line-height: 26px; color: #3A3631">{{presetIntro}}</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+      <sc-for list="{{presets}}" as="p" hint-placeholder-count="8">
+        <div style="background: #FBF8F3; border-radius: 24px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; gap: 6px; height: 96px">
+            <sc-for list="{{p.swatches}}" as="s" hint-placeholder-count="5">
+              <span style="{{s.style}}">{{s.hex}}</span>
+            </sc-for>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px">
+            <span style="flex: 1; font-size: 18px; line-height: 24px; font-weight: 700">{{p.name}}</span>
+            <span style="height: 28px; padding: 0 10px; border-radius: 14px; background: #EFE9DF; display: flex; align-items: center; font-size: 12px; font-weight: 700">{{p.mood}}</span>
+          </div>
+          <span style="margin-top: -6px; font-size: 14px; line-height: 19px; color: #5E584F">{{p.meta}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section aria-label="Scales" style="display: flex; gap: 48px; border-top: 2px solid #151515; padding-top: 28px">
+    <div style="width: 360px; flex: none; display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 56px; line-height: 60px; letter-spacing: 0.5px">SCALES</h2>
+      <p style="margin: 0; font-size: 18px; line-height: 27px; color: #3A3631">Each color becomes step 500 of a ten-step scale. Lighter steps mix toward white, darker steps toward black. The mixing happens in OKLab, a color space built so equal steps look equal, so the ramp doesn't go muddy or jump.</p>
+    </div>
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: grid; grid-template-columns: 140px repeat(10, minmax(0, 1fr)); gap: 6px; font-size: 13px; line-height: 18px; font-weight: 700; color: #5E584F">
+        <span>Step · mix</span>
+        <sc-for list="{{mixLabels}}" as="m" hint-placeholder-count="10">
+          <span style="text-align: center">{{m}}</span>
+        </sc-for>
+      </div>
+      <sc-for list="{{scales}}" as="row" hint-placeholder-count="4">
+        <div style="display: grid; grid-template-columns: 140px repeat(10, minmax(0, 1fr)); gap: 6px; align-items: stretch">
+          <span style="display: flex; flex-direction: column; justify-content: center; font-size: 15px; line-height: 20px; font-weight: 700">{{row.name}}<span style="font: 500 12px/16px 'JetBrains Mono', monospace; color: #5E584F">{{row.base}}</span></span>
+          <sc-for list="{{row.cells}}" as="c" hint-placeholder-count="10">
+            <span style="{{c.style}}">{{c.hex}}</span>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section aria-label="Roles and contrast" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; border-top: 2px solid #151515; padding-top: 28px">
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <h2 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 56px; line-height: 60px; letter-spacing: 0.5px">ROLES</h2>
+      <div style="background: #FBF8F3; border-radius: 24px; padding: 8px 20px">
+        <sc-for list="{{roleRules}}" as="r" hint-placeholder-count="5">
+          <div style="display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid #E6DED2">
+            <span style="width: 120px; flex: none; font-size: 17px; line-height: 24px; font-weight: 700">{{r.name}}</span>
+            <span style="font-size: 16px; line-height: 24px; color: #3A3631">{{r.rule}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <p style="margin: 0; font-size: 15px; line-height: 22px; color: #5E584F">Auto-assign is a starting point. Tap Change on any role to swap in another palette color.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <h2 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 56px; line-height: 60px; letter-spacing: 0.5px">CONTRAST</h2>
+      <div style="background: #1D2320; color: #FFFFFF; border-radius: 24px; padding: 8px 20px">
+        <sc-for list="{{grades}}" as="g" hint-placeholder-count="4">
+          <div style="display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #343C37">
+            <span style="{{g.badge}}">{{g.name}}</span>
+            <span style="width: 90px; flex: none; font-family: Anton, Impact, sans-serif; font-size: 26px; line-height: 30px">{{g.ratio}}</span>
+            <span style="font-size: 16px; line-height: 23px; color: #DADFDA">{{g.use}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <p style="margin: 0; font-size: 15px; line-height: 22px; color: #5E584F">Thresholds follow WCAG 2.2. Button labels use black or white, whichever reads better on the primary color.</p>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
+// ---- Color system engine (shared by the color artboards) ----
+var MOODS = ['Earthy', 'Warm', 'Cool', 'Pastel', 'Bold', 'Neutral'];
+var PRESETS = [
+  { name: 'Sunset', mood: 'From image', mine: true, colors: ['#F6E7CB', '#E4572E', '#8C5383', '#F2A65A', '#2E4057', '#1B998B'] },
+  { name: 'Terracotta', mood: 'Earthy', colors: ['#2F3E46', '#C8553D', '#F28F3B', '#588B8B', '#FFE8DC'] },
+  { name: 'Clay & Moss', mood: 'Earthy', colors: ['#2E3A23', '#8C6A4F', '#6B7F4E', '#D9B48F', '#F3ECE0'] },
+  { name: 'Savanna', mood: 'Earthy', colors: ['#1F2A22', '#C8643B', '#E59A55', '#3E5641', '#F4E6C9'] },
+  { name: 'Ember', mood: 'Warm', colors: ['#3D0C11', '#D94F30', '#8E1B1B', '#F59E42', '#FCE8C8'] },
+  { name: 'Market day', mood: 'Warm', colors: ['#16323F', '#D91A60', '#F25C05', '#1B8C6D', '#FFF4D6'] },
+  { name: 'Lagoon', mood: 'Cool', colors: ['#0B3954', '#087E8B', '#5FB49C', '#F2A541', '#F5F1E8'] },
+  { name: 'Night swim', mood: 'Cool', colors: ['#101A2B', '#45607F', '#86A0BE', '#E4C36B', '#E4E7EA'] },
+  { name: 'Sorbet', mood: 'Pastel', colors: ['#3B3450', '#E7798F', '#C1F0DC', '#C9D7F8', '#FFF6E6'] },
+  { name: 'Linen', mood: 'Pastel', colors: ['#4B5859', '#C9828C', '#AFC5B3', '#E9B4BC', '#F6EEE8'] },
+  { name: 'Pop', mood: 'Bold', colors: ['#151515', '#FF3B6B', '#2979FF', '#FFC233', '#FFFFFF'] },
+  { name: 'Riso', mood: 'Bold', colors: ['#1A1A40', '#FF48B0', '#0078BF', '#FFE800', '#F5F1E8'] },
+  { name: 'Paper', mood: 'Neutral', colors: ['#151515', '#4A453E', '#9C958A', '#D7CFC2', '#FBF8F3'] },
+  { name: 'Concrete', mood: 'Neutral', colors: ['#1F2124', '#3C4046', '#7D838C', '#C3C8CE', '#F2F3F5'] },
+  { name: 'Palettez', mood: 'Bold', colors: ['#151515', '#6A58CC', '#E2603F', '#F4C542', '#A7D86E', '#EFE9DF'] }
+];
+var STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+// Tints mix toward white, shades toward black, in OKLab so steps look even.
+var MIX = [[1, 0.92], [1, 0.82], [1, 0.64], [1, 0.44], [1, 0.22], [0, 0], [-1, 0.15], [-1, 0.32], [-1, 0.5], [-1, 0.66]];
+
+function hexToRgb(h) { var n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+function rgbToHex(c) { return '#' + c.map(function (v) { v = Math.max(0, Math.min(255, Math.round(v))); return (v < 16 ? '0' : '') + v.toString(16); }).join('').toUpperCase(); }
+function toLin(v) { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }
+function fromLin(v) { v = v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055; return v * 255; }
+function toOklab(hex) {
+  var c = hexToRgb(hex).map(toLin), r = c[0], g = c[1], b = c[2];
+  var l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  var m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  var s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return [0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s, 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s];
+}
+function fromOklab(L) {
+  var l = Math.pow(L[0] + 0.3963377774 * L[1] + 0.2158037573 * L[2], 3);
+  var m = Math.pow(L[0] - 0.1055613458 * L[1] - 0.0638541728 * L[2], 3);
+  var s = Math.pow(L[0] - 0.0894841775 * L[1] - 1.2914855480 * L[2], 3);
+  return rgbToHex([4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s].map(fromLin));
+}
+function mixHex(a, b, t) { var A = toOklab(a), B = toOklab(b); return fromOklab([0, 1, 2].map(function (i) { return A[i] + (B[i] - A[i]) * t; })); }
+function scaleOf(hex) {
+  return STEPS.map(function (step, i) {
+    var m = MIX[i], v = m[0] === 0 ? hex.toUpperCase() : mixHex(hex, m[0] > 0 ? '#FFFFFF' : '#000000', m[1]);
+    return { step: step, hex: v };
+  });
+}
+function lum(hex) { var c = hexToRgb(hex).map(toLin); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
+function contrast(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+function grade(r) { return r >= 7 ? 'AAA' : r >= 4.5 ? 'AA' : r >= 3 ? 'AA Large' : 'Fail'; }
+function inkOn(hex) { return contrast(hex, '#151515') >= contrast(hex, '#FFFFFF') ? '#151515' : '#FFFFFF'; }
+function hsl(hex) {
+  var c = hexToRgb(hex).map(function (v) { return v / 255; }), mx = Math.max.apply(null, c), mn = Math.min.apply(null, c), h = 0, s = 0, l = (mx + mn) / 2;
+  if (mx !== mn) { var d = mx - mn; s = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn); h = mx === c[0] ? (c[1] - c[2]) / d + (c[1] < c[2] ? 6 : 0) : mx === c[1] ? (c[2] - c[0]) / d + 2 : (c[0] - c[1]) / d + 4; h *= 60; }
+  return [h, s, l];
+}
+function fromHsl(h, s, l) {
+  h = ((h % 360) + 360) % 360;
+  var f = function (n) { var k = (n + h / 30) % 12, a = s * Math.min(l, 1 - l); return 255 * (l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1))); };
+  return rgbToHex([f(0), f(8), f(4)]);
+}
+function harmonies(hex) {
+  var c = hsl(hex), h = c[0], s = c[1], l = c[2];
+  var at = function (d) { return fromHsl(h + d, s, l); };
+  return [
+    { name: 'Complementary', colors: [hex.toUpperCase(), at(180)] },
+    { name: 'Analogous', colors: [at(-30), hex.toUpperCase(), at(30)] },
+    { name: 'Triadic', colors: [hex.toUpperCase(), at(120), at(240)] },
+    { name: 'Split', colors: [hex.toUpperCase(), at(150), at(210)] }
+  ];
+}
+// Roles: background = lightest, text = darkest, primary = the most colorful color that is
+// readable on the background, secondary = the next, accent = the hue furthest from primary.
+function autoRoles(colors) {
+  var byL = colors.slice().sort(function (a, b) { return lum(b) - lum(a); });
+  var bg = byL[0], text = byL[byL.length - 1];
+  if (contrast(bg, text) < 7) text = contrast(bg, '#151515') >= contrast(bg, '#FFFFFF') ? '#151515' : '#FFFFFF';
+  var rest = colors.filter(function (c) { return c !== bg && c !== text; });
+  if (!rest.length) rest = [text];
+  var chroma = function (c) { var o = toOklab(c); return Math.hypot(o[1], o[2]); };
+  var ranked = rest.slice().sort(function (a, b) { return (chroma(b) + (contrast(b, bg) >= 3 ? 1 : 0)) - (chroma(a) + (contrast(a, bg) >= 3 ? 1 : 0)); });
+  var primary = ranked[0], secondary = ranked[1] || ranked[0];
+  var hp = hsl(primary)[0];
+  var pool = rest.filter(function (c) { return c !== primary && c !== secondary; });
+  if (!pool.length) pool = rest.filter(function (c) { return c !== primary; });
+  if (!pool.length) pool = [primary];
+  var accent = pool.sort(function (a, b) {
+    var da = Math.abs(((hsl(a)[0] - hp + 540) % 360) - 180), db = Math.abs(((hsl(b)[0] - hp + 540) % 360) - 180);
+    return da - db;
+  })[0];
+  return { background: bg, text: text, primary: primary, secondary: secondary, accent: accent };
+}
+var ROLE_ORDER = ['background', 'text', 'primary', 'secondary', 'accent'];
+var ROLE_NAMES = { background: 'Background', text: 'Text', primary: 'Primary', secondary: 'Secondary', accent: 'Accent' };
+function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+function exportCode(kind, p, roles) {
+  var names = p.colors.map(function (c, i) { return 'color-' + (i + 1); });
+  if (kind === 'css') {
+    var lines = [':root {'];
+    ROLE_ORDER.forEach(function (r) { lines.push('  --' + r + ': ' + roles[r] + ';'); });
+    p.colors.forEach(function (c, i) { scaleOf(c).forEach(function (s) { lines.push('  --' + names[i] + '-' + s.step + ': ' + s.hex + ';'); }); });
+    lines.push('}'); return lines.join('\n');
+  }
+  if (kind === 'tailwind') {
+    var o = {}; ROLE_ORDER.forEach(function (r) { o[r] = roles[r]; });
+    p.colors.forEach(function (c, i) { var sc = {}; scaleOf(c).forEach(function (s) { sc[s.step] = s.hex; }); o[names[i]] = sc; });
+    return '// tailwind.config.js\nmodule.exports = {\n  theme: { extend: { colors: ' + JSON.stringify(o, null, 2).replace(/\n/g, '\n  ') + ' } }\n};';
+  }
+  var t = { name: p.name, roles: roles, scales: {} };
+  p.colors.forEach(function (c, i) { var sc = {}; scaleOf(c).forEach(function (s) { sc[s.step] = s.hex; }); t.scales[names[i]] = sc; });
+  return JSON.stringify(t, null, 2);
+}
+// ---- end color engine ----
+
+class Component extends DCLogic {
+  renderVals() {
+    var sw = function (c, size) {
+      return { hex: c.replace('#', ''), style: 'flex: 1; min-width: 0; border-radius: 12px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; box-sizing: border-box; font: 700 ' + (size || 10) + 'px/12px Figtree, sans-serif; background: ' + c + '; color: ' + inkOn(c) + (lum(c) > 0.85 ? '; box-shadow: inset 0 0 0 1px rgba(21,21,21,0.1)' : '') };
+    };
+    var steps = [
+      ['01', 'Choose', 'Start from a preset, or pull a palette from your own photo in the From image tab.', '#6A58CC', '#FFFFFF'],
+      ['02', 'Assign roles', 'Background, text, primary, secondary and accent are picked automatically, and you can change any of them.', '#F4C542', '#151515'],
+      ['03', 'Generate scales', 'Every color gets a 50–900 scale for hover states, borders, tints and dark mode.', '#E2603F', '#151515'],
+      ['04', 'Check and export', 'Each pairing is graded for contrast, then copied as CSS variables, Tailwind config or JSON.', '#A7D86E', '#151515']
+    ].map(function (s) { return { n: s[0], title: s[1], text: s[2], style: 'border-radius: 26px; padding: 22px; display: flex; flex-direction: column; gap: 8px; background: ' + s[3] + '; color: ' + s[4] }; });
+    var examples = [['Market day', 2], ['Lagoon', 1], ['Riso', 2], ['Sunset', 1]];
+    return {
+      steps: steps,
+      presetIntro: (PRESETS.length - 1) + ' presets across ' + MOODS.length + ' moods, plus the palettes you pull from photos.',
+      presets: PRESETS.map(function (p) {
+        var roles = autoRoles(p.colors), r = contrast(roles.background, roles.text);
+        return { name: p.name, mood: p.mood, meta: p.colors.length + ' colors · text on background ' + (Math.round(r * 10) / 10) + ':1 ' + grade(r), swatches: p.colors.map(function (c) { return sw(c); }) };
+      }),
+      mixLabels: STEPS.map(function (s, i) { var m = MIX[i]; return s + (m[0] === 0 ? ' · base' : ' · ' + Math.round(m[1] * 100) + '% ' + (m[0] > 0 ? 'W' : 'K')); }),
+      scales: examples.map(function (e) {
+        var p = PRESETS.filter(function (x) { return x.name === e[0]; })[0], c = p.colors[e[1]];
+        return {
+          name: p.name, base: c,
+          cells: scaleOf(c).map(function (s) { return { hex: s.hex.replace('#', ''), style: 'height: 76px; border-radius: 12px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; box-sizing: border-box; font: 500 11px/14px \'JetBrains Mono\', monospace; background: ' + s.hex + '; color: ' + inkOn(s.hex) + (s.step === 500 ? '; box-shadow: inset 0 0 0 3px ' + inkOn(s.hex) : '') }; })
+        };
+      }),
+      roleRules: [
+        ['Background', 'The lightest color. Pages and large surfaces.'],
+        ['Text', 'The darkest color. Falls back to near-black or white if it is under 7:1 on the background.'],
+        ['Primary', 'The most colorful color that is readable on the background. Buttons and links.'],
+        ['Secondary', 'The next most colorful color. Secondary buttons, chips, tags.'],
+        ['Accent', 'The hue furthest around the color wheel from primary. Badges and highlights, used sparingly.']
+      ].map(function (r) { return { name: r[0], rule: r[1] }; }),
+      grades: [['AAA', '7:1', 'Body text at any size.', '#A7D86E'], ['AA', '4.5:1', 'Body text, the minimum for everyday reading.', '#A7D86E'], ['AA Large', '3:1', 'Text 24 px and up, bold 18.5 px and up, icons and borders.', '#F4C542'], ['Fail', 'below 3', 'Decoration only. Never put text here.', '#E2603F']].map(function (g) {
+        return { name: g[0], ratio: g[1], use: g[2], badge: 'width: 92px; flex: none; height: 32px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #151515; background: ' + g[3] };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

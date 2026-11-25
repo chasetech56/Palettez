@@ -1,0 +1,11 @@
+# Baseline Profile for Palettez (v1.1.0)
+# Pre-compiles hot startup and rendering paths via ART AOT compilation.
+# Regenerate on device/emulator via: ./gradlew :macrobenchmark:generateBaselineProfile
+HSPLapp/palettez/MainActivity;->onCreate(Landroid/os/Bundle;)V
+HSPLapp/palettez/ui/PalettezAppKt;->PalettezApp(Lapp/palettez/settings/SettingsRepository;Lapp/palettez/palette/RecentPalettesRepository;Landroid/net/Uri;)V
+HSPLapp/palettez/ui/theme/PalettezThemeKt;->PalettezTheme(ZLkotlin/jvm/functions/Function2;)V
+HSPLapp/palettez/palette/PaletteExtractor;->extract(Landroid/graphics/Bitmap;I)Ljava/util/List;
+HSPLapp/palettez/color/ColorEngine;->buildColorSystem(Ljava/util/List;)Lapp/palettez/color/ColorSystem;
+HSPLapp/palettez/layout/LayoutEngine;->generate(Lapp/palettez/layout/LayoutEngine$LayoutTemplate;Lapp/palettez/layout/LayoutEngine$LayoutSettings;)Ljava/util/List;
+HSPLapp/palettez/fonts/GoogleFontsRepository;->loadCatalog()Ljava/util/List;
+HSPLapp/palettez/update/WhatsNewRegistry;->latestRelease()Lapp/palettez/update/ReleaseNote;

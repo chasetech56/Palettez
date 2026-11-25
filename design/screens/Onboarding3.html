@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Palettez – Grids and fonts</title>
+<script src="./dc-lite.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700&family=Playfair+Display:wght@700&family=Caveat:wght@700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#151515}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; background: #EFE9DF; color: #151515; font-family: Figtree, system-ui, sans-serif; overflow: hidden">
+
+  <section role="img" aria-label="A 6-column layout grid next to font cards" style="position: absolute; left: 0; right: 0; top: 0; height: 400px; background: #1D2320; border-radius: 0 0 36px 36px; overflow: hidden">
+    <div style="position: absolute; left: 26px; top: 64px; width: 190px; height: 250px; border-radius: 10px; background: #FFFFFF; padding: 18px; box-sizing: border-box; transform: rotate(-5deg); display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; box-shadow: 0 18px 40px rgba(0,0,0,0.4)">
+      <div style="background: rgba(255,59,107,0.18); border-left: 1px solid rgba(255,59,107,0.5); border-right: 1px solid rgba(255,59,107,0.5)"></div>
+      <div style="background: rgba(255,59,107,0.18); border-left: 1px solid rgba(255,59,107,0.5); border-right: 1px solid rgba(255,59,107,0.5)"></div>
+      <div style="background: rgba(255,59,107,0.18); border-left: 1px solid rgba(255,59,107,0.5); border-right: 1px solid rgba(255,59,107,0.5)"></div>
+      <div style="background: rgba(255,59,107,0.18); border-left: 1px solid rgba(255,59,107,0.5); border-right: 1px solid rgba(255,59,107,0.5)"></div>
+      <div style="background: rgba(255,59,107,0.18); border-left: 1px solid rgba(255,59,107,0.5); border-right: 1px solid rgba(255,59,107,0.5)"></div>
+      <div style="background: rgba(255,59,107,0.18); border-left: 1px solid rgba(255,59,107,0.5); border-right: 1px solid rgba(255,59,107,0.5)"></div>
+    </div>
+    <div style="position: absolute; left: 196px; top: 54px; width: 168px; padding: 14px 16px; box-sizing: border-box; border-radius: 22px; background: #F4C542; transform: rotate(4deg)">
+      <span style="display: block; font-size: 11px; font-weight: 700">Playfair Display</span>
+      <span style="display: block; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 40px; line-height: 46px">Aa Gg</span>
+    </div>
+    <div style="position: absolute; left: 210px; top: 162px; width: 156px; padding: 14px 16px; box-sizing: border-box; border-radius: 22px; background: #A7D86E; transform: rotate(-3deg)">
+      <span style="display: block; font-size: 11px; font-weight: 700">Caveat</span>
+      <span style="display: block; font-family: Caveat, cursive; font-weight: 700; font-size: 42px; line-height: 46px">Hello!</span>
+    </div>
+    <div style="position: absolute; left: 186px; top: 262px; width: 172px; padding: 14px 16px; box-sizing: border-box; border-radius: 22px; background: #6A58CC; color: #FFFFFF; transform: rotate(3deg)">
+      <span style="display: block; font-size: 11px; font-weight: 700">Bebas Neue</span>
+      <span style="display: block; font-family: 'Bebas Neue', sans-serif; font-size: 44px; line-height: 46px">HEADLINE</span>
+    </div>
+    <span style="position: absolute; left: 26px; top: 336px; height: 32px; padding: 0 12px; border-radius: 16px; background: #A7D86E; display: flex; align-items: center; font-size: 12px; font-weight: 700">NEW fonts added automatically</span>
+  </section>
+
+  <div style="position: absolute; left: 24px; right: 24px; bottom: 32px; display: flex; flex-direction: column; gap: 14px">
+    <h1 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 46px; line-height: 50px; letter-spacing: 0.5px">GRIDS &amp; EVERY<br>GOOGLE FONT</h1>
+    <p style="margin: 0; font-size: 16px; line-height: 23px; color: #4A453E">Build layout grids for posts, slides and print. Browse the whole Google Fonts library, which updates when new families are released.</p>
+
+    <div>
+      <p id="theme-label" style="margin: 0 0 8px; font-size: 13px; line-height: 18px; font-weight: 700">Choose your look</p>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px" role="radiogroup" aria-labelledby="theme-label">
+        <sc-for list="{{themes}}" as="t" hint-placeholder-count="3">
+          <button type="button" role="radio" aria-checked="{{t.checked}}" onClick="{{t.pick}}" style="{{t.style}}">
+            <span style="{{t.swatch}}"></span>
+            {{t.label}}
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 6px; margin: 2px 0" aria-label="Step 3 of 3" role="img">
+      <span style="width: 8px; height: 8px; border-radius: 4px; background: #CFC6B8"></span>
+      <span style="width: 8px; height: 8px; border-radius: 4px; background: #CFC6B8"></span>
+      <span style="width: 28px; height: 8px; border-radius: 4px; background: #151515"></span>
+    </div>
+    <div style="display: flex; gap: 10px">
+      <a href="Onboarding2.html" aria-label="Back" style="width: 60px; height: 60px; flex: none; border-radius: 50%; background: #FBF8F3; color: #151515; display: flex; align-items: center; justify-content: center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+      </a>
+      <a href="Main.html" style="flex: 1; height: 60px; border-radius: 30px; background: #A7D86E; color: #151515; display: flex; align-items: center; justify-content: center; font: 400 22px/28px Anton, Impact, sans-serif; letter-spacing: 0.8px; text-decoration: none">START DESIGNING</a>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { theme: 'system' }; }
+  renderVals() {
+    var self = this;
+    return {
+      themes: [['light', 'Light', 'background: #EFE9DF; box-shadow: inset 0 0 0 1.5px #CFC6B8'], ['dark', 'Dark', 'background: #1D2320'], ['system', 'System', 'background: linear-gradient(90deg, #EFE9DF 50%, #1D2320 50%); box-shadow: inset 0 0 0 1.5px #CFC6B8']].map(function (t) {
+        var sel = self.state.theme === t[0];
+        return {
+          label: t[1], checked: sel ? 'true' : 'false',
+          pick: function () { self.setState({ theme: t[0] }); },
+          swatch: 'width: 18px; height: 18px; border-radius: 50%; flex: none; ' + t[2],
+          style: 'height: 48px; border-radius: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font: 600 14px/20px Figtree, sans-serif; ' + (sel ? 'border: 2px solid #151515; background: #FBF8F3; color: #151515' : 'border: 2px solid transparent; background: #FBF8F3; color: #4A453E')
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

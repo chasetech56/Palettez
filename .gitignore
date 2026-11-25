@@ -1,0 +1,18 @@
+# Build output
+.gradle/
+android/.gradle-home/
+build/
+**/build/
+local.properties
+*.iml
+.idea/
+*.keystore
+*.jks
+keystore.properties
+android/keystore/
+
+# Third-party mood references: internal use only
+design/inspiration/
+
+# OS
+.DS_Store

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Palettez – Grid</title>
+<script src="./dc-lite.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#151515}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; background: #EFE9DF; color: #151515; font-family: Figtree, system-ui, sans-serif; overflow: hidden">
+
+  <main style="position: absolute; inset: 0; overflow-y: auto; padding: 20px 20px 120px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box">
+
+    <header style="display: flex; align-items: flex-end; gap: 12px">
+      <div style="flex: 1">
+        <p style="margin: 0 0 2px; font-size: 15px; line-height: 20px; font-weight: 500; color: #5E584F">Layout grids</p>
+        <h1 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 52px; line-height: 56px; letter-spacing: 0.5px">GRID</h1>
+      </div>
+      <button type="button" aria-label="Copy CSS grid" onClick="{{copyCss}}" style="width: 52px; height: 52px; border: 0; border-radius: 50%; background: #FBF8F3; color: #151515; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 4px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"></path></svg>
+      </button>
+    </header>
+
+    <nav aria-label="Grid mode" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 28px; background: #FBF8F3">
+      <span aria-current="page" style="height: 48px; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; background: #151515; color: #FFFFFF">Columns</span>
+      <a href="GridLayouts.html" style="height: 48px; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #151515; text-decoration: none">Layouts</a>
+    </nav>
+
+    <div style="display: flex; gap: 8px; overflow-x: auto; flex: none; margin: 0 -20px; padding: 0 20px" role="radiogroup" aria-label="Canvas size">
+      <sc-for list="{{presets}}" as="p" hint-placeholder-count="4">
+        <button type="button" role="radio" aria-checked="{{p.checked}}" onClick="{{p.pick}}" style="{{p.style}}">
+          <span style="font-weight: 700">{{p.label}}</span>
+          <span style="{{p.subStyle}}">{{p.size}}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <section aria-label="Preview" style="background: #AFCBEA; border-radius: 28px; padding: 18px; display: flex; flex-direction: column; align-items: center; gap: 14px; flex: none">
+      <div role="img" aria-label="{{summary}}" style="{{canvasStyle}}">
+        <sc-for list="{{cells}}" as="c" hint-placeholder-count="12">
+          <div style="{{c}}"></div>
+        </sc-for>
+        <sc-for list="{{lines}}" as="l" hint-placeholder-count="0">
+          <div style="{{l}}"></div>
+        </sc-for>
+        <div style="{{marginStyle}}"></div>
+      </div>
+      <p style="margin: 0; align-self: stretch; padding: 10px 14px; border-radius: 16px; background: rgba(251,248,243,0.75); font-size: 13px; line-height: 18px; font-weight: 600; text-align: center">{{summary}}</p>
+    </section>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <sc-for list="{{steppers}}" as="t" hint-placeholder-count="6">
+        <div style="background: #FBF8F3; border-radius: 22px; padding: 14px 14px 12px; display: flex; flex-direction: column; gap: 6px">
+          <span id="{{t.id}}" style="font-size: 13px; line-height: 18px; font-weight: 600; color: #5E584F">{{t.label}}</span>
+          <div style="display: flex; align-items: center; gap: 6px">
+            <output aria-labelledby="{{t.id}}" style="flex: 1; font-family: Anton, Impact, sans-serif; font-size: 34px; line-height: 40px">{{t.value}}</output>
+            <button type="button" aria-label="{{t.downAria}}" onClick="{{t.down}}" style="width: 44px; height: 44px; border: 1.5px solid #D7CFC2; border-radius: 50%; background: transparent; color: #151515; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg>
+            </button>
+            <button type="button" aria-label="{{t.upAria}}" onClick="{{t.up}}" style="width: 44px; height: 44px; border: 0; border-radius: 50%; background: #151515; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            </button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <section aria-label="Guides and color" style="background: #FBF8F3; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 28px; letter-spacing: 0.3px">GUIDES</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <sc-for list="{{toggles}}" as="g" hint-placeholder-count="3">
+          <button type="button" aria-pressed="{{g.pressed}}" onClick="{{g.flip}}" style="{{g.style}}">{{g.label}}</button>
+        </sc-for>
+      </div>
+      <h2 style="margin: 4px 0 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 28px; letter-spacing: 0.3px">GRID COLOR</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px" role="radiogroup" aria-label="Grid color">
+        <sc-for list="{{colors}}" as="c" hint-placeholder-count="6">
+          <button type="button" role="radio" aria-checked="{{c.checked}}" aria-label="{{c.name}}" onClick="{{c.pick}}" style="{{c.style}}"></button>
+        </sc-for>
+      </div>
+      <p style="margin: 0; font-size: 12px; line-height: 17px; color: #5E584F">The last two come from your palette.</p>
+    </section>
+
+    <div style="display: flex; gap: 8px">
+      <button type="button" onClick="{{savePng}}" style="flex: 1; height: 56px; border: 0; border-radius: 28px; background: #A7D86E; color: #151515; font: 400 22px/28px Anton, Impact, sans-serif; letter-spacing: 0.6px; cursor: pointer">SAVE PNG</button>
+      <button type="button" onClick="{{saveSvg}}" style="height: 56px; padding: 0 22px; border: 0; border-radius: 28px; background: #151515; color: #FFFFFF; font: 400 22px/28px Anton, Impact, sans-serif; letter-spacing: 0.6px; cursor: pointer">SVG</button>
+    </div>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="position: absolute; left: 24px; right: 24px; bottom: 102px; padding: 13px 18px; border-radius: 22px; background: #FBF8F3; color: #151515; font-size: 14px; line-height: 20px; font-weight: 600; box-shadow: 0 6px 20px rgba(21,21,21,0.18)">{{toast}}</div>
+  </sc-if>
+
+  <nav aria-label="Main" style="position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); height: 64px; padding: 6px; box-sizing: border-box; border-radius: 32px; background: #151515; display: flex; align-items: center; gap: 4px; box-shadow: 0 10px 30px rgba(21,21,21,0.25)">
+    <a href="Main.html" aria-label="Palette" style="width: 52px; height: 52px; border-radius: 50%; color: #FBF8F3; display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-1.2-1-1.4-1-2.5 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5C21 6.3 17 3 12 3Z"></path><circle cx="7.5" cy="11" r="1"></circle><circle cx="10" cy="7" r="1"></circle><circle cx="15" cy="7.5" r="1"></circle></svg>
+    </a>
+    <span aria-current="page" style="height: 52px; padding: 0 20px 0 16px; border-radius: 26px; background: #FBF8F3; color: #151515; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M9 3v18M15 3v18M3 9h18M3 15h18"></path></svg>
+      Grid
+    </span>
+    <a href="Fonts.html" aria-label="Fonts" style="width: 52px; height: 52px; border-radius: 50%; color: #FBF8F3; display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20 10 4h1l6 16M6.5 14h8M17 20h4"></path></svg>
+    </a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+var PRESETS = [['Square', 1080, 1080], ['Portrait', 1080, 1350], ['Story', 1080, 1920], ['Slide', 1920, 1080], ['A4', 2480, 3508], ['Phone', 390, 844]];
+var COLORS = [['#FF3B6B', 'Pink'], ['#2979FF', 'Blue'], ['#1B998B', 'Teal'], ['#151515', 'Black'], ['#E4572E', 'Palette red-orange'], ['#8C5383', 'Palette plum']];
+function rgba(hex, a) { var n = parseInt(hex.slice(1), 16); return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')'; }
+function r2(v) { return Math.round(v * 100) / 100; }
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { preset: 0, cols: 12, rows: 0, gut: 20, margin: 60, base: 0, opacity: 15, color: '#FF3B6B', center: false, thirds: false, transparent: false, toast: '' };
+  }
+  componentWillUnmount() { clearTimeout(this.t); }
+  say(msg) { var self = this; this.setState({ toast: msg }); clearTimeout(this.t); this.t = setTimeout(function () { self.setState({ toast: '' }); }, 1800); }
+  stepper(key, label, step, lo, hi, unit) {
+    var self = this, v = this.state[key];
+    var set = function (n) { var o = {}; o[key] = Math.max(lo, Math.min(hi, n)); self.setState(o); };
+    return {
+      id: 'st-' + key, label: label, value: v + (unit || ''),
+      downAria: 'Decrease ' + label.toLowerCase(), upAria: 'Increase ' + label.toLowerCase(),
+      down: function () { set(self.state[key] - step); }, up: function () { set(self.state[key] + step); }
+    };
+  }
+  renderVals() {
+    var self = this, S = this.state, P = PRESETS[S.preset];
+    var W = P[1], H = P[2], cols = S.cols, rows = S.rows, gut = S.gut, m = S.margin, base = S.base, op = S.opacity / 100;
+    var s = Math.min(314 / W, 300 / H), pw = W * s, ph = H * s;
+    var iw = W - 2 * m, ih = H - 2 * m;
+    var cw = cols ? (iw - gut * (cols - 1)) / cols : 0, rh = rows ? (ih - gut * (rows - 1)) / rows : 0;
+    var fill = rgba(S.color, op), stroke = rgba(S.color, 0.9);
+    var box = function (x, y, w, h) { return 'position: absolute; left: ' + r2(x * s) + 'px; top: ' + r2(y * s) + 'px; width: ' + r2(Math.max(0, w) * s) + 'px; height: ' + r2(Math.max(0, h) * s) + 'px; background: ' + fill; };
+    var cells = [];
+    if (cw > 0 || rh > 0) {
+      if (cols && !rows) for (var i = 0; i < cols; i++) cells.push(box(m + i * (cw + gut), m, cw, ih));
+      if (rows && !cols) for (var j = 0; j < rows; j++) cells.push(box(m, m + j * (rh + gut), iw, rh));
+      if (rows && cols) for (var a = 0; a < rows; a++) for (var b = 0; b < cols; b++) cells.push(box(m + b * (cw + gut), m + a * (rh + gut), cw, rh));
+    }
+    var lines = [];
+    if (base > 0) for (var y = m + base, n = 0; y < H - m && n < 400; y += base, n++)
+      lines.push('position: absolute; left: ' + r2(m * s) + 'px; width: ' + r2(Math.max(0, iw) * s) + 'px; top: ' + r2(y * s) + 'px; height: 0; border-top: 1px solid ' + rgba(S.color, 0.35));
+    var dash = function (vertical, at, color) {
+      return vertical ? 'position: absolute; top: 0; bottom: 0; left: ' + r2(at) + 'px; width: 0; border-left: 1px dashed ' + color
+                      : 'position: absolute; left: 0; right: 0; top: ' + r2(at) + 'px; height: 0; border-top: 1px dashed ' + color;
+    };
+    if (S.center) { lines.push(dash(true, pw / 2, stroke)); lines.push(dash(false, ph / 2, stroke)); }
+    if (S.thirds) [1, 2].forEach(function (k) { lines.push(dash(true, pw * k / 3, '#2979FF')); lines.push(dash(false, ph * k / 3, '#2979FF')); });
+
+    var bg = S.transparent ? 'background: repeating-conic-gradient(#DCE6F2 0 25%, #FFFFFF 0 50%) 0 0 / 12px 12px' : 'background: #FFFFFF';
+    var bad = (cols && cw <= 0) || (rows && rh <= 0) || iw <= 0 || ih <= 0;
+    var summary = W + ' × ' + H + ' px' + (cols ? ' · column ' + r2(cw) + ' px' : '') + (rows ? ' · row ' + r2(rh) + ' px' : '') + (bad ? ' · margins or gutters too large' : '');
+    var css = '.container {\n  max-width: ' + W + 'px;\n  padding: ' + m + 'px;\n  display: grid;\n' + (cols ? '  grid-template-columns: repeat(' + cols + ', 1fr);\n' : '') + (rows ? '  grid-template-rows: repeat(' + rows + ', 1fr);\n' : '') + '  gap: ' + gut + 'px;\n}';
+
+    return {
+      presets: PRESETS.map(function (p, i) {
+        var sel = S.preset === i;
+        return {
+          label: p[0], size: p[1] + '×' + p[2], checked: sel ? 'true' : 'false',
+          pick: function () { self.setState({ preset: i }); },
+          style: 'flex: none; height: 48px; padding: 0 18px; border: 0; border-radius: 24px; cursor: pointer; display: flex; align-items: center; gap: 8px; font: 500 14px/20px Figtree, sans-serif; background: ' + (sel ? '#151515' : '#FBF8F3') + '; color: ' + (sel ? '#FFFFFF' : '#151515'),
+          subStyle: 'font-size: 12px; color: ' + (sel ? '#D7CFC2' : '#5E584F')
+        };
+      }),
+      steppers: [
+        this.stepper('cols', 'Columns', 1, 0, 24), this.stepper('rows', 'Rows', 1, 0, 24),
+        this.stepper('gut', 'Gutter', 4, 0, 200), this.stepper('margin', 'Margins', 10, 0, 400),
+        this.stepper('base', 'Baseline', 4, 0, 64), this.stepper('opacity', 'Fill', 5, 0, 60, '%')
+      ],
+      toggles: [['center', 'Center lines'], ['thirds', 'Rule of thirds'], ['transparent', 'Transparent']].map(function (t) {
+        var on = !!S[t[0]];
+        return {
+          label: t[1], pressed: on ? 'true' : 'false',
+          flip: function () { var o = {}; o[t[0]] = !S[t[0]]; self.setState(o); },
+          style: 'height: 44px; padding: 0 18px; border-radius: 22px; cursor: pointer; font: 600 14px/20px Figtree, sans-serif; ' + (on ? 'border: 0; background: #151515; color: #FFFFFF' : 'border: 1.5px solid #D7CFC2; background: transparent; color: #151515')
+        };
+      }),
+      colors: COLORS.map(function (c) {
+        var sel = S.color === c[0];
+        return {
+          name: c[1], checked: sel ? 'true' : 'false',
+          pick: function () { self.setState({ color: c[0] }); },
+          style: 'width: 44px; height: 44px; border-radius: 50%; padding: 0; cursor: pointer; background: ' + c[0] + '; border: 0; box-shadow: ' + (sel ? '0 0 0 3px #FBF8F3, 0 0 0 5px #151515' : 'none')
+        };
+      }),
+      canvasStyle: 'position: relative; overflow: hidden; border-radius: 6px; width: ' + r2(pw) + 'px; height: ' + r2(ph) + 'px; box-shadow: 0 8px 24px rgba(21,21,21,0.15); ' + bg,
+      marginStyle: 'position: absolute; box-sizing: border-box; left: ' + r2(m * s) + 'px; top: ' + r2(m * s) + 'px; width: ' + r2(Math.max(0, iw) * s) + 'px; height: ' + r2(Math.max(0, ih) * s) + 'px; border: 1px solid ' + stroke,
+      cells: cells, lines: lines, summary: summary, toast: S.toast,
+      savePng: function () { self.say('Grid saved as PNG'); },
+      saveSvg: function () { self.say('Grid saved as SVG'); },
+      copyCss: function () { try { if (navigator.clipboard) navigator.clipboard.writeText(css).catch(function () {}); } catch (e) {} self.say('CSS grid copied'); }
+    };
+  }
+}
+</script>
+</body>
+</html>

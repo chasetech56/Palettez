@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Palettez – Palette</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#151515}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; background: #EFE9DF; color: #151515; font-family: Figtree, system-ui, sans-serif; overflow: hidden">
+
+  <main style="position: absolute; inset: 0; overflow-y: auto; padding: 20px 20px 120px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box">
+
+    <header style="display: flex; align-items: flex-end; gap: 12px">
+      <div style="flex: 1">
+        <p style="margin: 0 0 2px; font-size: 15px; line-height: 20px; font-weight: 500; color: #5E584F">Palettez</p>
+        <h1 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 52px; line-height: 56px; letter-spacing: 0.5px">PALETTE</h1>
+      </div>
+      <a href="Settings.dc.html" aria-label="Settings" style="width: 52px; height: 52px; border-radius: 50%; background: #FBF8F3; color: #151515; display: flex; align-items: center; justify-content: center; margin-bottom: 4px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg>
+      </a>
+      <button type="button" aria-label="Take a photo" style="width: 52px; height: 52px; border: 0; border-radius: 50%; background: #FBF8F3; color: #151515; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 4px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+      </button>
+    </header>
+
+    <nav aria-label="Palette source" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 28px; background: #FBF8F3; flex: none">
+      <span aria-current="page" style="height: 48px; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; background: #151515; color: #FFFFFF">From image</span>
+      <a href="PalettePresets.dc.html" style="height: 48px; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #151515; text-decoration: none">Presets</a>
+    </nav>
+
+    <section aria-label="Image" style="position: relative; height: 236px; border-radius: 28px; overflow: hidden; background: #F6E7CB; flex: none">
+      <div role="img" aria-label="Sample mood image: sunset over hills and water" style="position: absolute; inset: 0">
+        <div style="position: absolute; left: 206px; top: 30px; width: 104px; height: 104px; border-radius: 50%; background: #F2A65A"></div>
+        <div style="position: absolute; left: -50px; top: 104px; width: 320px; height: 130px; border-radius: 50%; background: #E4572E"></div>
+        <div style="position: absolute; left: 150px; top: 120px; width: 330px; height: 140px; border-radius: 50%; background: #8C5383"></div>
+        <div style="position: absolute; left: 0; top: 172px; width: 100%; height: 24px; background: #1B998B"></div>
+        <div style="position: absolute; left: 0; top: 196px; width: 100%; height: 40px; background: #2E4057"></div>
+      </div>
+      <div style="position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 8px">
+        <span style="flex: 1; height: 44px; display: flex; align-items: center; padding: 0 16px; border-radius: 22px; background: rgba(251,248,243,0.92); font-size: 14px; font-weight: 600">sunset.jpg · {{count}} colors</span>
+        <button type="button" aria-label="Choose another image" style="width: 44px; height: 44px; border: 0; border-radius: 50%; background: #151515; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+        </button>
+      </div>
+    </section>
+
+    <div style="display: flex; height: 20px; border-radius: 10px; overflow: hidden; flex: none" role="img" aria-label="Palette strip sized by how much of the image each color covers">
+      <sc-for list="{{swatches}}" as="s" hint-placeholder-count="6">
+        <div style="{{s.stripStyle}}"></div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; gap: 8px; overflow-x: auto; flex: none" role="radiogroup" aria-label="Order">
+      <sc-for list="{{orders}}" as="o" hint-placeholder-count="3">
+        <button type="button" role="radio" aria-checked="{{o.checked}}" onClick="{{o.pick}}" style="{{o.style}}">{{o.label}}</button>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 4px">
+      <h2 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 26px; line-height: 32px; letter-spacing: 0.3px">SWATCHES</h2>
+      <button type="button" onClick="{{copyAll}}" style="height: 36px; padding: 0 14px; border: 0; border-radius: 18px; background: transparent; color: #151515; font: 600 14px/20px Figtree, sans-serif; text-decoration: underline; cursor: pointer">Copy all HEX</button>
+    </div>
+
+    <sc-for list="{{swatches}}" as="s" hint-placeholder-count="3">
+      <article style="{{s.cardStyle}}">
+        <div style="display: flex; align-items: flex-start; gap: 8px">
+          <button type="button" onClick="{{s.copyHex}}" aria-label="{{s.hexAria}}" style="{{s.hexStyle}}">{{s.hex}}</button>
+          <span style="{{s.pctStyle}}">{{s.pct}}</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px">
+          <sc-for list="{{s.values}}" as="v" hint-placeholder-count="3">
+            <button type="button" onClick="{{v.copy}}" aria-label="{{v.aria}}" style="{{s.pillStyle}}">
+              <span style="font: 700 11px/16px Figtree, sans-serif; letter-spacing: 0.6px">{{v.label}}</span>
+              <span style="font: 500 12px/16px 'JetBrains Mono', monospace">{{v.text}}</span>
+            </button>
+          </sc-for>
+        </div>
+      </article>
+    </sc-for>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px">
+      <button type="button" onClick="{{copyCss}}" style="height: 44px; padding: 0 18px; border: 0; border-radius: 22px; background: #FBF8F3; color: #151515; font: 600 14px/20px Figtree, sans-serif; cursor: pointer">CSS variables</button>
+      <button type="button" onClick="{{copyFull}}" style="height: 44px; padding: 0 18px; border: 0; border-radius: 22px; background: #FBF8F3; color: #151515; font: 600 14px/20px Figtree, sans-serif; cursor: pointer">Full list</button>
+      <button type="button" onClick="{{savePng}}" style="height: 44px; padding: 0 20px; border: 0; border-radius: 22px; background: #151515; color: #FFFFFF; font: 600 14px/20px Figtree, sans-serif; cursor: pointer">Save PNG</button>
+    </div>
+    <p style="margin: 0; font-size: 12px; line-height: 17px; color: #5E584F">CMYK uses the standard conversion formula. For exact print color, check against your printer's profile.</p>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="position: absolute; left: 24px; right: 24px; bottom: 102px; padding: 13px 18px; border-radius: 22px; background: #FBF8F3; color: #151515; font-size: 14px; line-height: 20px; font-weight: 600; box-shadow: 0 6px 20px rgba(21,21,21,0.18)">{{toast}}</div>
+  </sc-if>
+
+  <nav aria-label="Main" style="position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); height: 64px; padding: 6px; box-sizing: border-box; border-radius: 32px; background: #151515; display: flex; align-items: center; gap: 4px; box-shadow: 0 10px 30px rgba(21,21,21,0.25)">
+    <span aria-current="page" style="height: 52px; padding: 0 20px 0 16px; border-radius: 26px; background: #FBF8F3; color: #151515; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-1.2-1-1.4-1-2.5 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5C21 6.3 17 3 12 3Z"></path><circle cx="7.5" cy="11" r="1"></circle><circle cx="10" cy="7" r="1"></circle><circle cx="15" cy="7.5" r="1"></circle></svg>
+      Palette
+    </span>
+    <a href="Grid.dc.html" aria-label="Grid" style="width: 52px; height: 52px; border-radius: 50%; color: #FBF8F3; display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M9 3v18M15 3v18M3 9h18M3 15h18"></path></svg>
+    </a>
+    <a href="Fonts.dc.html" aria-label="Fonts" style="width: 52px; height: 52px; border-radius: 50%; color: #FBF8F3; display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20 10 4h1l6 16M6.5 14h8M17 20h4"></path></svg>
+    </a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+var BASE = [
+  { hex: '#F6E7CB', share: 0.31 },
+  { hex: '#E4572E', share: 0.22 },
+  { hex: '#8C5383', share: 0.18 },
+  { hex: '#F2A65A', share: 0.14 },
+  { hex: '#2E4057', share: 0.09 },
+  { hex: '#1B998B', share: 0.06 }
+];
+function rgbOf(hex) { var n = parseInt(hex.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+function cmykOf(c) {
+  var r = c[0] / 255, g = c[1] / 255, b = c[2] / 255, k = 1 - Math.max(r, g, b);
+  if (k >= 1) return [0, 0, 0, 100];
+  return [(1 - r - k) / (1 - k), (1 - g - k) / (1 - k), (1 - b - k) / (1 - k), k].map(function (v) { return Math.round(v * 100); });
+}
+function hslOf(c) {
+  var r = c[0] / 255, g = c[1] / 255, b = c[2] / 255, mx = Math.max(r, g, b), mn = Math.min(r, g, b), h = 0, s = 0, l = (mx + mn) / 2;
+  if (mx !== mn) {
+    var d = mx - mn; s = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn);
+    h = mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60;
+  }
+  return [Math.round(h), Math.round(s * 100), Math.round(l * 100)];
+}
+function relLum(c) {
+  var f = function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+  return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]);
+}
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { order: 'share', toast: '' }; }
+  componentWillUnmount() { clearTimeout(this.t); }
+  say(msg) { var self = this; this.setState({ toast: msg }); clearTimeout(this.t); this.t = setTimeout(function () { self.setState({ toast: '' }); }, 1800); }
+  copy(text, what) {
+    try { if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {}); } catch (e) {}
+    this.say('Copied ' + (what || text));
+  }
+  renderVals() {
+    var self = this, order = this.state.order;
+    var list = BASE.map(function (b) {
+      var c = rgbOf(b.hex), k = cmykOf(c), h = hslOf(c);
+      return { hex: b.hex, share: b.share, rgb: c.join(', '), cmyk: k.join(' · '), hsl: h[0] + '° ' + h[1] + '% ' + h[2] + '%', css: { rgb: 'rgb(' + c.join(', ') + ')', cmyk: 'cmyk(' + k.join('%, ') + '%)', hsl: 'hsl(' + h[0] + ', ' + h[1] + '%, ' + h[2] + '%)' }, hue: h[0], L: relLum(c) };
+    });
+    if (order === 'share') list.sort(function (a, b) { return b.share - a.share; });
+    if (order === 'light') list.sort(function (a, b) { return b.L - a.L; });
+    if (order === 'hue') list.sort(function (a, b) { return a.hue - b.hue; });
+
+    var swatches = list.map(function (s) {
+      var darkInk = (s.L + 0.05) / 0.05 >= 1.05 / (s.L + 0.05); // black text contrasts better than white
+      var ink = darkInk ? '#151515' : '#FFFFFF';
+      return {
+        hex: s.hex,
+        hexAria: 'Copy HEX ' + s.hex,
+        copyHex: function () { self.copy(s.hex); },
+        stripStyle: 'flex: ' + s.share + ' 1 0; background: ' + s.hex,
+        cardStyle: 'background: ' + s.hex + '; color: ' + ink + '; border-radius: 26px; padding: 18px; display: flex; flex-direction: column; gap: 14px' + (s.L > 0.7 ? '; box-shadow: inset 0 0 0 1px rgba(21,21,21,0.08)' : ''),
+        hexStyle: 'flex: 1; text-align: left; padding: 0; border: 0; background: transparent; cursor: pointer; color: ' + ink + '; font: 400 40px/44px Anton, Impact, sans-serif; letter-spacing: 0.5px',
+        pctStyle: 'height: 32px; padding: 0 12px; border-radius: 16px; display: flex; align-items: center; font: 700 13px/16px Figtree, sans-serif; background: ' + (darkInk ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.2)') + '; color: ' + ink,
+        pillStyle: 'height: 36px; padding: 0 12px; border: 0; border-radius: 18px; display: flex; align-items: center; gap: 8px; cursor: pointer; color: ' + ink + '; background: ' + (darkInk ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.18)'),
+        pct: Math.round(s.share * 100) + '%',
+        values: [['RGB', s.rgb, s.css.rgb], ['CMYK', s.cmyk, s.css.cmyk], ['HSL', s.hsl, s.css.hsl]].map(function (p) {
+          return { label: p[0], text: p[1], aria: 'Copy ' + p[0] + ' ' + p[2], copy: function () { self.copy(p[2]); } };
+        })
+      };
+    });
+    var orders = [['share', 'Most used'], ['light', 'Light to dark'], ['hue', 'By hue']].map(function (o) {
+      var sel = order === o[0];
+      return {
+        label: o[1], checked: sel ? 'true' : 'false',
+        pick: function () { self.setState({ order: o[0] }); },
+        style: 'flex: none; height: 44px; padding: 0 18px; border: 0; border-radius: 22px; cursor: pointer; font: 600 14px/20px Figtree, sans-serif; background: ' + (sel ? '#151515' : '#FBF8F3') + '; color: ' + (sel ? '#FFFFFF' : '#151515')
+      };
+    });
+    var hexes = list.map(function (s) { return s.hex; });
+    return {
+      swatches: swatches, orders: orders, count: list.length, toast: this.state.toast,
+      copyAll: function () { self.copy(hexes.join(', '), 'all HEX codes'); },
+      copyCss: function () { self.copy(':root {\n' + hexes.map(function (h, i) { return '  --color-' + (i + 1) + ': ' + h + ';'; }).join('\n') + '\n}', 'CSS variables'); },
+      copyFull: function () { self.copy(list.map(function (s, i) { return 'Color ' + (i + 1) + '\n  HEX  ' + s.hex + '\n  RGB  ' + s.css.rgb + '\n  CMYK ' + s.css.cmyk + '\n  HSL  ' + s.css.hsl; }).join('\n\n'), 'full list'); },
+      savePng: function () { self.say('Palette saved'); }
+    };
+  }
+}
+</script>
+</body>
+</html>

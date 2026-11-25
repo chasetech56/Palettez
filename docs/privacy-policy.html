@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Palettez</title>
+  <meta name="description" content="Palettez collects nothing. Images never leave your phone. Zero accounts, zero ads, zero analytics.">
+  <meta name="theme-color" content="#EFE9DF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1D2320" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ground: #EFE9DF;
+      --surface: #FBF8F3;
+      --ink: #151515;
+      --ink-muted: #5E584F;
+      --line: #D7CFC2;
+      --lime: #A7D86E;
+      --deep: #1D2320;
+      --font-display: 'Anton', Impact, sans-serif;
+      --font-body: 'Figtree', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ground: #1D2320;
+        --surface: #2A312D;
+        --ink: #FFFFFF;
+        --ink-muted: #C9CEC9;
+        --line: #38423B;
+        --deep: #11150F;
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--ground);
+      color: var(--ink);
+      font-family: var(--font-body);
+      line-height: 1.65;
+      padding: 32px 20px 80px;
+    }
+
+    .container {
+      max-inline-size: 760px;
+      margin-inline: auto;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+      text-decoration: none;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 10px 18px;
+      border-radius: 9999px;
+      margin-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--lime);
+      color: #151515;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(44px, 7vw, 64px);
+      line-height: 1.02;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .updated {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--ink-muted);
+      margin-bottom: 28px;
+    }
+
+    .lead-card {
+      background: var(--deep);
+      color: #FFFFFF;
+      border-radius: 24px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      font-size: 17px;
+    }
+
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: 26px;
+      letter-spacing: 0.4px;
+      margin-bottom: 12px;
+    }
+
+    ul {
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      color: var(--ink-muted);
+    }
+
+    li strong {
+      color: var(--ink);
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: rgba(128, 128, 128, 0.14);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <a href="index.html" class="back-link">&larr; Back to Palettez</a>
+
+    <div class="badge">ZERO TRACKING &bull; LOCAL-FIRST</div>
+    <h1>PRIVACY POLICY</h1>
+    <p class="updated">Last updated: November 25, 2026 &middot; Package ID: app.palettez</p>
+
+    <div class="lead-card">
+      <strong>Palettez</strong> is a free, open-source, local-first Android application designed for creators and designers. We collect nothing. Your creative work and device data belong strictly to you.
+    </div>
+
+    <section class="section-card">
+      <h2>1. ZERO TRACKING, ZERO ANALYTICS, ZERO ADS</h2>
+      <ul>
+        <li><strong>No accounts required:</strong> You never need an account, username, email, or password to use Palettez.</li>
+        <li><strong>No third-party trackers:</strong> Palettez contains no tracking libraries, no advertising SDKs, and no analytics frameworks.</li>
+        <li><strong>No crash diagnostic transmissions:</strong> Palettez does not transmit crash logs or telemetry to external servers.</li>
+      </ul>
+    </section>
+
+    <section class="section-card">
+      <h2>2. PHOTOS AND COLORS STAY ON YOUR DEVICE</h2>
+      <ul>
+        <li><strong>On-device processing:</strong> When you pick an image via the Android Photo Picker or take a photo with your camera, images are decoded and clustered strictly in device memory.</li>
+        <li><strong>Zero photo uploads:</strong> Your images, camera captures, posters, and palettes are never uploaded or sent to any server.</li>
+        <li><strong>Minimal permissions:</strong> Camera captures use the system camera app (<code>TakePicture</code>). Palettez declares zero <code>CAMERA</code> or storage permissions in <code>AndroidManifest.xml</code>.</li>
+      </ul>
+    </section>
+
+    <section class="section-card">
+      <h2>3. NETWORK USAGE</h2>
+      <ul>
+        <li><strong>Google Fonts only:</strong> Palettez connects exclusively via HTTPS (<code>cleartextTrafficPermitted=false</code>) to official Google Fonts hosts: <code>fonts.google.com</code>, <code>fonts.googleapis.com</code>, and <code>fonts.gstatic.com</code>.</li>
+        <li><strong>No identifiers:</strong> Requests fetch the public font catalog and <code>.ttf</code> font files you choose to preview or download, carrying zero user or device identifiers.</li>
+      </ul>
+    </section>
+
+    <section class="section-card">
+      <h2>4. LOCAL STORAGE &amp; EXPORTS</h2>
+      <ul>
+        <li><strong>Device preferences:</strong> Theme, default color count, and grid settings are stored locally with Jetpack DataStore.</li>
+        <li><strong>Recent palettes &amp; font cache:</strong> Saved locally inside your app sandbox; clearable anytime in <strong>Settings</strong>.</li>
+        <li><strong>User-controlled exports:</strong> PNG, SVG, CSS, JSON, and <code>.ttf</code> files are saved only to locations you explicitly pick via the Android Storage Access Framework.</li>
+      </ul>
+    </section>
+
+    <section class="section-card">
+      <h2>5. OPEN SOURCE &amp; CONTACT</h2>
+      <ul>
+        <li><strong>Apache 2.0 License:</strong> Palettez is open source so anyone can inspect and audit its privacy commitments.</li>
+        <li><strong>Questions:</strong> Open an issue on our <a href="https://github.com/app-palettez/palettez" target="_blank" rel="noopener">GitHub repository</a>.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

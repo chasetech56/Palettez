@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111214">
+<title>Palettez (web prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  :root{
+    --bg:#111214; --panel:#1a1c1f; --panel2:#222529; --line:#2e3237;
+    --text:#ecedee; --muted:#9aa0a6; --accent:#7cc4ff; --ok:#7be0a8;
+    --r:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);
+    font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+  header{position:sticky;top:0;z-index:5;background:rgba(17,18,20,.92);backdrop-filter:blur(8px);
+    padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+  header h1{margin:0;font-size:18px;letter-spacing:.2px}
+  header p{margin:2px 0 0;color:var(--muted);font-size:12.5px}
+  main{padding:14px 14px 96px;max-width:900px;margin:0 auto}
+  section.tab{display:none} section.tab.on{display:block}
+  nav{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;background:#16181b;
+    border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+  nav button{flex:1;background:none;border:0;color:var(--muted);padding:10px 4px 12px;font:inherit;font-size:12.5px;
+    display:flex;flex-direction:column;align-items:center;gap:3px}
+  nav button svg{width:22px;height:22px}
+  nav button.on{color:var(--accent)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .grow{flex:1}
+  label.f{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted);min-width:0}
+  input[type=number],input[type=text],input[type=search],select,textarea{
+    background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:10px;
+    padding:9px 10px;font:inherit;width:100%;min-width:0}
+  input[type=color]{width:44px;height:38px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);padding:3px}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  .btn{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:10px;
+    padding:9px 13px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
+  .btn.primary{background:var(--accent);color:#08131d;border-color:transparent;font-weight:600}
+  .btn:active{transform:scale(.98)}
+  .muted{color:var(--muted);font-size:12.5px}
+  .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  @media(min-width:640px){.grid2.wide{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+  /* Palette */
+  .drop{border:1.5px dashed var(--line);border-radius:var(--r);padding:22px;text-align:center;color:var(--muted)}
+  .drop.has{padding:0;border-style:solid;overflow:hidden}
+  .drop img{display:block;width:100%;max-height:340px;object-fit:contain;background:#0c0d0e}
+  .strip{display:flex;height:56px;border-radius:12px;overflow:hidden;margin:12px 0}
+  .strip div{flex-basis:0}
+  .sw{display:grid;grid-template-columns:62px 1fr;gap:12px;align-items:stretch;padding:10px 0;border-top:1px solid var(--line)}
+  .sw:first-child{border-top:0}
+  .chip{border-radius:10px;min-height:62px;position:relative}
+  .chip span{position:absolute;bottom:4px;right:6px;font-size:11px;font-weight:600}
+  .vals{display:flex;flex-direction:column;gap:5px}
+  .val{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--panel2);
+    border:1px solid var(--line);border-radius:8px;padding:6px 9px;font:13px ui-monospace,Menlo,Consolas,monospace;cursor:pointer}
+  .val b{font:600 11px system-ui,sans-serif;color:var(--muted);width:40px;flex:none}
+  .val i{font-style:normal;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .val svg{width:15px;height:15px;color:var(--muted);flex:none}
+
+  /* Grid */
+  .stage{background:#0c0d0e;border-radius:var(--r);padding:10px;display:flex;justify-content:center;overflow:hidden}
+  .stage canvas{max-width:100%;max-height:52vh;height:auto;box-shadow:0 2px 18px rgba(0,0,0,.5)}
+  details summary{cursor:pointer;color:var(--muted);font-size:13px;padding:4px 0}
+
+  /* Fonts */
+  .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .chips button{flex:none;background:var(--panel2);border:1px solid var(--line);color:var(--muted);
+    border-radius:999px;padding:6px 12px;font:inherit;font-size:13px}
+  .chips button.on{background:var(--accent);color:#08131d;border-color:transparent}
+  .font{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;margin-bottom:10px;cursor:pointer}
+  .font .meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
+  .font .name{color:var(--text);font-weight:600;font-size:13.5px}
+  .font .prev{margin-top:6px;word-break:break-word;line-height:1.2;color:var(--text)}
+  .tag{background:#21384a;color:var(--accent);border-radius:6px;padding:1px 6px;font-size:10.5px;font-weight:700;margin-left:6px}
+  .sheet{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center}
+  .sheet.on{display:flex}
+  .sheet .inner{background:var(--panel);width:100%;max-width:900px;max-height:88vh;overflow:auto;
+    border-radius:18px 18px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
+  pre{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;white-space:pre-wrap;
+    word-break:break-all;font:12px ui-monospace,Menlo,Consolas,monospace;margin:6px 0 10px}
+  .toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(20px);background:var(--ok);color:#06210f;
+    padding:8px 14px;border-radius:999px;font-weight:600;font-size:13px;opacity:0;transition:.2s;pointer-events:none;z-index:30}
+  .toast.on{opacity:1;transform:translateX(-50%)}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">Palette</h1>
+  <p id="sub">Images stay on this device. Nothing is uploaded.</p>
+</header>
+
+<main>
+<!-- ================= PALETTE ================= -->
+<section class="tab on" id="t-palette">
+  <div class="card">
+    <div class="drop" id="drop">
+      <p style="margin:0 0 12px">Pick a photo or mood image</p>
+      <div class="row" style="justify-content:center">
+        <label class="btn primary">Choose image<input id="file" type="file" accept="image/*" hidden></label>
+        <label class="btn">Camera<input id="cam" type="file" accept="image/*" capture="environment" hidden></label>
+      </div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <label class="f grow">Colors: <span id="kOut">6</span>
+        <input id="k" type="range" min="2" max="12" value="6"></label>
+      <label class="f" style="width:130px">Order
+        <select id="order"><option value="share">Most used</option><option value="light">Light → dark</option><option value="hue">By hue</option></select></label>
+    </div>
+  </div>
+
+  <div class="card" id="palOut" hidden>
+    <div class="strip" id="strip"></div>
+    <div class="row" style="margin-bottom:6px">
+      <button class="btn" data-copyall="hex">Copy all HEX</button>
+      <button class="btn" data-copyall="css">Copy CSS vars</button>
+      <button class="btn" data-copyall="full">Copy full list</button>
+      <button class="btn" id="pngPal">Save palette PNG</button>
+    </div>
+    <div id="swatches"></div>
+    <p class="muted">CMYK is a standard formula conversion. For exact print colors, check with your printer's color profile.</p>
+  </div>
+</section>
+
+<!-- ================= GRID ================= -->
+<section class="tab" id="t-grid">
+  <div class="card">
+    <div class="grid2">
+      <label class="f">Preset
+        <select id="preset">
+          <option value="1080x1080">Instagram post 1080×1080</option>
+          <option value="1080x1350">Instagram portrait 1080×1350</option>
+          <option value="1080x1920">Story / Reel 1080×1920</option>
+          <option value="1920x1080">HD slide 1920×1080</option>
+          <option value="1440x900">Desktop web 1440×900</option>
+          <option value="390x844">Phone 390×844</option>
+          <option value="2480x3508">A4 portrait @300dpi</option>
+          <option value="3508x2480">A4 landscape @300dpi</option>
+          <option value="2550x3300">US Letter @300dpi</option>
+          <option value="custom">Custom…</option>
+        </select></label>
+      <div class="row" style="gap:8px">
+        <label class="f grow">Width<input id="gw" type="number" min="50" max="8000" value="1080"></label>
+        <label class="f grow">Height<input id="gh" type="number" min="50" max="8000" value="1080"></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage card" style="padding:10px"><canvas id="gc"></canvas></div>
+
+  <div class="card">
+    <div class="grid2 wide">
+      <label class="f">Columns<input id="cols" type="number" min="0" max="48" value="12"></label>
+      <label class="f">Rows<input id="rows" type="number" min="0" max="48" value="0"></label>
+      <label class="f">Gutter (px)<input id="gut" type="number" min="0" max="500" value="20"></label>
+      <label class="f">Baseline (px, 0 = off)<input id="base" type="number" min="0" max="500" value="0"></label>
+      <label class="f">Margin top<input id="mt" type="number" min="0" max="2000" value="60"></label>
+      <label class="f">Margin bottom<input id="mb" type="number" min="0" max="2000" value="60"></label>
+      <label class="f">Margin left<input id="ml" type="number" min="0" max="2000" value="60"></label>
+      <label class="f">Margin right<input id="mr" type="number" min="0" max="2000" value="60"></label>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <label class="f">Grid<input id="gcol" type="color" value="#ff3b6b"></label>
+      <label class="f">Background<input id="bgcol" type="color" value="#ffffff"></label>
+      <label class="f grow">Fill opacity <span id="opOut">15%</span><input id="op" type="range" min="0" max="60" value="15"></label>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <label class="row muted" style="gap:6px"><input id="transparent" type="checkbox"> Transparent background</label>
+      <label class="row muted" style="gap:6px"><input id="centerLines" type="checkbox"> Center lines</label>
+      <label class="row muted" style="gap:6px"><input id="thirds" type="checkbox"> Rule of thirds</label>
+    </div>
+    <details style="margin-top:8px">
+      <summary>Put an image under the grid</summary>
+      <div class="row" style="margin-top:8px">
+        <label class="btn">Choose image<input id="gimg" type="file" accept="image/*" hidden></label>
+        <button class="btn" id="gimgClear">Remove</button>
+        <label class="row muted" style="gap:6px"><input id="useImgSize" type="checkbox"> Match image size</label>
+      </div>
+    </details>
+    <div class="row" style="margin-top:12px">
+      <button class="btn primary" id="gPng">Save PNG</button>
+      <button class="btn" id="gSvg">Save SVG</button>
+      <button class="btn" id="gCss">Copy CSS grid</button>
+    </div>
+    <p class="muted" id="gInfo"></p>
+  </div>
+</section>
+
+<!-- ================= FONTS ================= -->
+<section class="tab" id="t-fonts">
+  <div class="card">
+    <input id="fq" type="search" placeholder="Search Google Fonts">
+    <div class="chips" id="cats" style="margin-top:10px"></div>
+    <div class="row" style="margin-top:10px">
+      <label class="f grow">Sort
+        <select id="fsort"><option value="date">Newest first</option><option value="pop">Popular</option><option value="alpha">A → Z</option></select></label>
+      <label class="f grow">Size <span id="fsOut">32px</span><input id="fsize" type="range" min="14" max="72" value="32"></label>
+    </div>
+    <input id="ftext" type="text" style="margin-top:10px" value="The quick brown fox jumps over the lazy dog" aria-label="Preview text">
+    <p class="muted" id="fstatus" style="margin:8px 0 0">Loading font list…</p>
+    <details style="margin-top:4px">
+      <summary>Font list source</summary>
+      <p class="muted">The app reads the full catalog from Google Fonts each time it opens, so new releases show up automatically. If that fails, you can paste a free Google Fonts API key (from Google Cloud Console). It is saved only on this device.</p>
+      <div class="row"><input id="fkey" type="text" class="grow" placeholder="API key (optional)" style="flex:1"><button class="btn" id="fkeySave">Save &amp; reload</button></div>
+    </details>
+  </div>
+  <div id="flist"></div>
+  <div style="text-align:center"><button class="btn" id="fmore" hidden>Show more</button></div>
+</section>
+</main>
+
+<div class="sheet" id="sheet"><div class="inner" id="sheetIn"></div></div>
+<div class="toast" id="toast">Copied</div>
+
+<nav>
+  <button class="on" data-tab="palette"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-1.2-1-1.4-1-2.5 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5C21 6.3 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10" cy="7" r="1.2"/><circle cx="15" cy="7.5" r="1.2"/></svg>Palette</button>
+  <button data-tab="grid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>Grid</button>
+  <button data-tab="fonts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20 10 4h1l6 16M6.5 14h8"/><path d="M17 20h4"/></svg>Fonts</button>
+</nav>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem("dk_"+k); return v===null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem("dk_"+k, JSON.stringify(v)); }catch(e){} }
+};
+
+/* ---------- shared ---------- */
+let toastT;
+function toast(msg="Copied"){ const t=$("#toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("on"),1300); }
+async function copy(text, msg){
+  try{ await navigator.clipboard.writeText(text); }
+  catch(e){ const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");}catch(_){} ta.remove(); }
+  toast(msg||"Copied");
+}
+function download(blob, name){
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+}
+const COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+
+const TITLES = {palette:["Palette","Images stay on this device. Nothing is uploaded."],
+  grid:["Grid","Build layout grids and export PNG, SVG or CSS."],
+  fonts:["Fonts","Google Fonts, free and open source, updated live."]};
+$$("nav button").forEach(b=>b.onclick=()=>{
+  $$("nav button").forEach(x=>x.classList.toggle("on",x===b));
+  $$("section.tab").forEach(s=>s.classList.toggle("on", s.id==="t-"+b.dataset.tab));
+  const [t,s]=TITLES[b.dataset.tab]; $("#title").textContent=t; $("#sub").textContent=s;
+  if(b.dataset.tab==="grid") drawGrid();
+  if(b.dataset.tab==="fonts") initFonts();
+  window.scrollTo(0,0);
+});
+
+/* ================= PALETTE ================= */
+let pixels=null, palette=[];
+const hex2 = n => n.toString(16).padStart(2,"0");
+const toHex = c => "#"+hex2(c[0])+hex2(c[1])+hex2(c[2]);
+function toCmyk([r,g,b]){
+  const R=r/255,G=g/255,B=b/255, k=1-Math.max(R,G,B);
+  if(k>=1) return [0,0,0,100];
+  return [(1-R-k)/(1-k),(1-G-k)/(1-k),(1-B-k)/(1-k),k].map(v=>Math.round(v*100));
+}
+function toHsl([r,g,b]){
+  r/=255;g/=255;b/=255; const mx=Math.max(r,g,b), mn=Math.min(r,g,b); let h=0,s=0; const l=(mx+mn)/2;
+  if(mx!==mn){ const d=mx-mn; s=l>.5?d/(2-mx-mn):d/(mx+mn);
+    h = mx===r ? (g-b)/d+(g<b?6:0) : mx===g ? (b-r)/d+2 : (r-g)/d+4; h*=60; }
+  return [Math.round(h),Math.round(s*100),Math.round(l*100)];
+}
+const lum = ([r,g,b]) => 0.2126*r+0.7152*g+0.0722*b;
+
+function loadImage(file){
+  if(!file) return;
+  const url=URL.createObjectURL(file); const img=new Image();
+  img.onload=()=>{
+    const d=$("#drop"); d.classList.add("has");
+    d.innerHTML=""; const shown=new Image(); shown.src=url; shown.alt="Selected image"; d.appendChild(shown);
+    const bar=document.createElement("div"); bar.className="row"; bar.style.cssText="padding:10px;justify-content:center";
+    bar.innerHTML='<label class="btn">Change image<input type="file" accept="image/*" hidden></label>';
+    bar.querySelector("input").onchange=e=>loadImage(e.target.files[0]); d.appendChild(bar);
+    const max=160, sc=Math.min(1, max/Math.max(img.width,img.height));
+    const w=Math.max(1,Math.round(img.width*sc)), h=Math.max(1,Math.round(img.height*sc));
+    const c=document.createElement("canvas"); c.width=w; c.height=h; const x=c.getContext("2d",{willReadFrequently:true});
+    x.drawImage(img,0,0,w,h); const data=x.getImageData(0,0,w,h).data; const arr=[];
+    for(let i=0;i<data.length;i+=4){ if(data[i+3]>125) arr.push([data[i],data[i+1],data[i+2]]); }
+    pixels=arr; extract();
+  };
+  img.onerror=()=>toast("Couldn't read that image");
+  img.src=url;
+}
+$("#file").onchange=e=>loadImage(e.target.files[0]);
+$("#cam").onchange=e=>loadImage(e.target.files[0]);
+
+// k-means++ with a fixed seed so results are stable
+function rng(seed){ return ()=>{ seed=(seed*1664525+1013904223)>>>0; return seed/4294967296; }; }
+function kmeans(px,k){
+  const rand=rng(42), d2=(a,b)=>(a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2;
+  const uniq=new Set(px.map(p=>p.join(","))).size; k=Math.min(k,uniq);
+  const C=[px[Math.floor(rand()*px.length)].slice()];
+  const dist=new Float64Array(px.length).fill(Infinity);
+  while(C.length<k){
+    let sum=0; const last=C[C.length-1];
+    for(let i=0;i<px.length;i++){ const v=d2(px[i],last); if(v<dist[i]) dist[i]=v; sum+=dist[i]; }
+    let r=rand()*sum, idx=0; for(;idx<px.length-1;idx++){ r-=dist[idx]; if(r<=0) break; }
+    C.push(px[idx].slice());
+  }
+  const asg=new Int32Array(px.length);
+  for(let it=0;it<20;it++){
+    const S=C.map(()=>[0,0,0,0]); let moved=false;
+    for(let i=0;i<px.length;i++){
+      let best=0,bd=Infinity; for(let j=0;j<C.length;j++){ const v=d2(px[i],C[j]); if(v<bd){bd=v;best=j;} }
+      if(asg[i]!==best){asg[i]=best;moved=true;} const s=S[best]; s[0]+=px[i][0]; s[1]+=px[i][1]; s[2]+=px[i][2]; s[3]++;
+    }
+    S.forEach((s,j)=>{ if(s[3]) C[j]=[s[0]/s[3],s[1]/s[3],s[2]/s[3]]; });
+    if(!moved && it>0) break;
+  }
+  const counts=new Array(C.length).fill(0); for(let i=0;i<px.length;i++) counts[asg[i]]++;
+  return C.map((c,j)=>({rgb:c.map(Math.round), share:counts[j]/px.length})).filter(c=>c.share>0);
+}
+function extract(){
+  if(!pixels||!pixels.length) return;
+  palette=kmeans(pixels, +$("#k").value);
+  const o=$("#order").value;
+  if(o==="share") palette.sort((a,b)=>b.share-a.share);
+  if(o==="light") palette.sort((a,b)=>lum(b.rgb)-lum(a.rgb));
+  if(o==="hue") palette.sort((a,b)=>toHsl(a.rgb)[0]-toHsl(b.rgb)[0]);
+  renderPalette();
+}
+$("#k").oninput=e=>{ $("#kOut").textContent=e.target.value; extract(); };
+$("#order").onchange=extract;
+
+function fmt(c){
+  const h=toHex(c.rgb).toUpperCase(), [r,g,b]=c.rgb, [C,M,Y,K]=toCmyk(c.rgb), [hh,s,l]=toHsl(c.rgb);
+  return {hex:h, rgb:`rgb(${r}, ${g}, ${b})`, cmyk:`cmyk(${C}%, ${M}%, ${Y}%, ${K}%)`, hsl:`hsl(${hh}, ${s}%, ${l}%)`};
+}
+function renderPalette(){
+  $("#palOut").hidden=false;
+  $("#strip").innerHTML=palette.map(c=>`<div style="flex-grow:${Math.max(c.share,.02)};background:${toHex(c.rgb)}"></div>`).join("");
+  $("#swatches").innerHTML=palette.map(c=>{
+    const f=fmt(c), fg=lum(c.rgb)>150?"#000":"#fff";
+    const v=(lab,t)=>`<div class="val" data-copy="${t}"><b>${lab}</b><i>${t}</i>${COPY_ICON}</div>`;
+    return `<div class="sw"><div class="chip" style="background:${f.hex}"><span style="color:${fg}">${c.share<.01?"<1":Math.round(c.share*100)}%</span></div>
+      <div class="vals">${v("HEX",f.hex)}${v("RGB",f.rgb)}${v("CMYK",f.cmyk)}${v("HSL",f.hsl)}</div></div>`;
+  }).join("");
+}
+$("#swatches").addEventListener("click",e=>{ const v=e.target.closest("[data-copy]"); if(v) copy(v.dataset.copy, "Copied "+v.dataset.copy); });
+$$("[data-copyall]").forEach(b=>b.onclick=()=>{
+  if(!palette.length) return; const t=b.dataset.copyall, F=palette.map(fmt);
+  if(t==="hex") copy(F.map(f=>f.hex).join(", "));
+  if(t==="css") copy(":root {\n"+F.map((f,i)=>`  --color-${i+1}: ${f.hex};`).join("\n")+"\n}");
+  if(t==="full") copy(F.map((f,i)=>`Color ${i+1}\n  HEX  ${f.hex}\n  RGB  ${f.rgb}\n  CMYK ${f.cmyk}\n  HSL  ${f.hsl}`).join("\n\n"));
+});
+$("#pngPal").onclick=()=>{
+  if(!palette.length) return;
+  const W=1200, rowH=150, c=document.createElement("canvas"); c.width=W; c.height=rowH*palette.length;
+  const x=c.getContext("2d");
+  palette.forEach((p,i)=>{ const f=fmt(p), y=i*rowH;
+    x.fillStyle=f.hex; x.fillRect(0,y,W,rowH);
+    x.fillStyle=lum(p.rgb)>150?"#000":"#fff";
+    x.font="600 44px system-ui,sans-serif"; x.fillText(f.hex,40,y+62);
+    x.font="26px system-ui,sans-serif"; x.fillText(f.rgb+"   "+f.cmyk,40,y+110);
+  });
+  c.toBlob(b=>download(b,"palette.png"));
+};
+
+/* ================= GRID ================= */
+const gc=$("#gc"); let gImg=null;
+const G=()=>({
+  W:Math.max(50,+$("#gw").value||1080), H:Math.max(50,+$("#gh").value||1080),
+  cols:Math.max(0,+$("#cols").value|0), rows:Math.max(0,+$("#rows").value|0), gut:Math.max(0,+$("#gut").value||0),
+  base:Math.max(0,+$("#base").value||0),
+  mt:+$("#mt").value||0, mb:+$("#mb").value||0, ml:+$("#ml").value||0, mr:+$("#mr").value||0,
+  col:$("#gcol").value, bg:$("#bgcol").value, op:+$("#op").value/100,
+  transparent:$("#transparent").checked, center:$("#centerLines").checked, thirds:$("#thirds").checked
+});
+function geom(g){
+  const iw=g.W-g.ml-g.mr, ih=g.H-g.mt-g.mb;
+  const cw=g.cols? (iw-g.gut*(g.cols-1))/g.cols : 0;
+  const rh=g.rows? (ih-g.gut*(g.rows-1))/g.rows : 0;
+  const cols=[...Array(g.cols)].map((_,i)=>[g.ml+i*(cw+g.gut), cw]);
+  const rows=[...Array(g.rows)].map((_,i)=>[g.mt+i*(rh+g.gut), rh]);
+  return {iw,ih,cw,rh,cols,rows};
+}
+function hexA(h,a){ const n=parseInt(h.slice(1),16); return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`; }
+function paint(ctx,g,withImg){
+  const m=geom(g); const lw=Math.max(1,Math.round(Math.min(g.W,g.H)/540));
+  ctx.clearRect(0,0,g.W,g.H);
+  if(!g.transparent){ ctx.fillStyle=g.bg; ctx.fillRect(0,0,g.W,g.H); }
+  if(withImg && gImg) ctx.drawImage(gImg,0,0,g.W,g.H);
+  ctx.fillStyle=hexA(g.col,g.op);
+  if(m.cols.length && !m.rows.length) m.cols.forEach(([x,w])=>ctx.fillRect(x,g.mt,w,m.ih));
+  if(m.rows.length && !m.cols.length) m.rows.forEach(([y,h])=>ctx.fillRect(g.ml,y,m.iw,h));
+  if(m.rows.length && m.cols.length) m.rows.forEach(([y,h])=>m.cols.forEach(([x,w])=>ctx.fillRect(x,y,w,h)));
+  ctx.strokeStyle=hexA(g.col,.9); ctx.lineWidth=lw;
+  ctx.strokeRect(g.ml+lw/2,g.mt+lw/2,m.iw-lw,m.ih-lw);
+  if(g.base>0){ ctx.strokeStyle=hexA(g.col,.35); ctx.lineWidth=Math.max(1,lw/2); ctx.beginPath();
+    for(let y=g.mt+g.base;y<g.H-g.mb;y+=g.base){ ctx.moveTo(g.ml,y+.5); ctx.lineTo(g.W-g.mr,y+.5); } ctx.stroke(); }
+  ctx.setLineDash([lw*6,lw*4]); ctx.lineWidth=lw;
+  if(g.center){ ctx.strokeStyle=hexA(g.col,.9); ctx.beginPath(); ctx.moveTo(g.W/2,0); ctx.lineTo(g.W/2,g.H); ctx.moveTo(0,g.H/2); ctx.lineTo(g.W,g.H/2); ctx.stroke(); }
+  if(g.thirds){ ctx.strokeStyle="rgba(60,160,255,.9)"; ctx.beginPath();
+    [1,2].forEach(i=>{ ctx.moveTo(g.W*i/3,0); ctx.lineTo(g.W*i/3,g.H); ctx.moveTo(0,g.H*i/3); ctx.lineTo(g.W,g.H*i/3); }); ctx.stroke(); }
+  ctx.setLineDash([]);
+  return m;
+}
+function drawGrid(){
+  const g=G(); gc.width=g.W; gc.height=g.H;
+  gc.style.background = g.transparent ? "repeating-conic-gradient(#2a2d31 0 25%,#1d1f22 0 50%) 0 0/20px 20px" : "";
+  const m=paint(gc.getContext("2d"),g,true);
+  const r=n=>Math.round(n*100)/100;
+  $("#gInfo").textContent = `${g.W}×${g.H}px · content ${r(m.iw)}×${r(m.ih)}`
+    + (g.cols? ` · column ${r(m.cw)}px`:"") + (g.rows? ` · row ${r(m.rh)}px`:"")
+    + ((g.cols&&m.cw<=0)||(g.rows&&m.rh<=0) ? " · gutters/margins too large":"");
+  store.set("grid", {preset:$("#preset").value, ...g});
+}
+$("#preset").onchange=e=>{ const v=e.target.value; if(v!=="custom"){ const [w,h]=v.split("x"); $("#gw").value=w; $("#gh").value=h; } drawGrid(); };
+["gw","gh"].forEach(id=>$("#"+id).addEventListener("input",()=>{ $("#preset").value="custom"; }));
+$$("#t-grid input:not([type=file]), #t-grid select").forEach(el=>el.addEventListener("input",drawGrid));
+$("#op").addEventListener("input",e=>$("#opOut").textContent=e.target.value+"%");
+$("#gimg").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const im=new Image(); im.onload=()=>{ gImg=im;
+  if($("#useImgSize").checked){ $("#gw").value=im.naturalWidth; $("#gh").value=im.naturalHeight; $("#preset").value="custom"; } drawGrid(); };
+  im.src=URL.createObjectURL(f); };
+$("#useImgSize").onchange=()=>{ if(gImg && $("#useImgSize").checked){ $("#gw").value=gImg.naturalWidth; $("#gh").value=gImg.naturalHeight; $("#preset").value="custom"; } drawGrid(); };
+$("#gimgClear").onclick=()=>{ gImg=null; drawGrid(); };
+$("#gPng").onclick=()=>{ const g=G(); const c=document.createElement("canvas"); c.width=g.W; c.height=g.H; paint(c.getContext("2d"),g,true);
+  c.toBlob(b=>download(b,`grid-${g.W}x${g.H}-${g.cols}col.png`)); };
+$("#gSvg").onclick=()=>{
+  const g=G(), m=geom(g), f=hexA(g.col,g.op), s=hexA(g.col,.9), r=n=>Math.round(n*100)/100; let o=[];
+  o.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${g.W}" height="${g.H}" viewBox="0 0 ${g.W} ${g.H}">`);
+  if(!g.transparent) o.push(`<rect width="100%" height="100%" fill="${g.bg}"/>`);
+  o.push(`<g id="grid" fill="${f}">`);
+  if(m.cols.length && !m.rows.length) m.cols.forEach(([x,w])=>o.push(`<rect x="${r(x)}" y="${g.mt}" width="${r(w)}" height="${r(m.ih)}"/>`));
+  if(m.rows.length && !m.cols.length) m.rows.forEach(([y,h])=>o.push(`<rect x="${g.ml}" y="${r(y)}" width="${r(m.iw)}" height="${r(h)}"/>`));
+  if(m.rows.length && m.cols.length) m.rows.forEach(([y,h])=>m.cols.forEach(([x,w])=>o.push(`<rect x="${r(x)}" y="${r(y)}" width="${r(w)}" height="${r(h)}"/>`)));
+  o.push(`</g><rect id="margins" x="${g.ml}" y="${g.mt}" width="${r(m.iw)}" height="${r(m.ih)}" fill="none" stroke="${s}" stroke-width="1"/>`);
+  if(g.base>0){ o.push(`<g id="baseline" stroke="${hexA(g.col,.35)}" stroke-width="1">`);
+    for(let y=g.mt+g.base;y<g.H-g.mb;y+=g.base) o.push(`<line x1="${g.ml}" y1="${r(y)}" x2="${g.W-g.mr}" y2="${r(y)}"/>`); o.push(`</g>`); }
+  if(g.center) o.push(`<g stroke="${s}" stroke-dasharray="6 4"><line x1="${g.W/2}" y1="0" x2="${g.W/2}" y2="${g.H}"/><line x1="0" y1="${g.H/2}" x2="${g.W}" y2="${g.H/2}"/></g>`);
+  if(g.thirds){ o.push(`<g stroke="rgba(60,160,255,.9)" stroke-dasharray="6 4">`); [1,2].forEach(i=>o.push(`<line x1="${r(g.W*i/3)}" y1="0" x2="${r(g.W*i/3)}" y2="${g.H}"/><line x1="0" y1="${r(g.H*i/3)}" x2="${g.W}" y2="${r(g.H*i/3)}"/>`)); o.push(`</g>`); }
+  o.push(`</svg>`);
+  download(new Blob([o.join("\n")],{type:"image/svg+xml"}),`grid-${g.W}x${g.H}-${g.cols}col.svg`);
+};
+$("#gCss").onclick=()=>{ const g=G();
+  copy(`.container {\n  max-width: ${g.W}px;\n  padding: ${g.mt}px ${g.mr}px ${g.mb}px ${g.ml}px;\n  display: grid;\n`
+    + (g.cols?`  grid-template-columns: repeat(${g.cols}, 1fr);\n`:"") + (g.rows?`  grid-template-rows: repeat(${g.rows}, 1fr);\n`:"")
+    + `  gap: ${g.gut}px;\n}`+(g.base?`\n\n/* baseline: ${g.base}px — set line-height to multiples of it */`:""), "CSS grid copied"); };
+(function restoreGrid(){ const s=store.get("grid",null); if(!s) return;
+  const map={gw:"W",gh:"H",cols:"cols",rows:"rows",gut:"gut",base:"base",mt:"mt",mb:"mb",ml:"ml",mr:"mr",gcol:"col",bgcol:"bg"};
+  Object.entries(map).forEach(([id,k])=>{ if(s[k]!==undefined) $("#"+id).value=s[k]; });
+  if(s.op!==undefined){ $("#op").value=Math.round(s.op*100); $("#opOut").textContent=$("#op").value+"%"; }
+  $("#transparent").checked=!!s.transparent; $("#centerLines").checked=!!s.center; $("#thirds").checked=!!s.thirds;
+  if(s.preset) $("#preset").value=s.preset; })();
+
+/* ================= FONTS ================= */
+const CATS=[["all","All"],["sans-serif","Sans"],["serif","Serif"],["display","Display"],["handwriting","Handwriting"],["monospace","Mono"]];
+let fonts=[], fontsReady=false, fontsLoading=false, cat="all", shown=40;
+const normCat = c => (c||"").toLowerCase().replace(/\s+/g,"-");
+// Small fallback so the tab still works if the live list can't be reached
+const FALLBACK=[["Inter","sans-serif"],["Roboto","sans-serif"],["Open Sans","sans-serif"],["Montserrat","sans-serif"],["Poppins","sans-serif"],
+  ["DM Sans","sans-serif"],["Manrope","sans-serif"],["Space Grotesk","sans-serif"],["Plus Jakarta Sans","sans-serif"],["Work Sans","sans-serif"],
+  ["Outfit","sans-serif"],["Sora","sans-serif"],["Figtree","sans-serif"],["Onest","sans-serif"],["Geist","sans-serif"],
+  ["Playfair Display","serif"],["Merriweather","serif"],["Lora","serif"],["Fraunces","serif"],["Cormorant Garamond","serif"],
+  ["EB Garamond","serif"],["Libre Baskerville","serif"],["Instrument Serif","serif"],["DM Serif Display","serif"],["Newsreader","serif"],
+  ["Bebas Neue","display"],["Anton","display"],["Abril Fatface","display"],["Righteous","display"],["Bricolage Grotesque","display"],
+  ["Dancing Script","handwriting"],["Caveat","handwriting"],["Pacifico","handwriting"],["Great Vibes","handwriting"],["Kalam","handwriting"],
+  ["JetBrains Mono","monospace"],["Fira Code","monospace"],["IBM Plex Mono","monospace"],["Space Mono","monospace"],["Geist Mono","monospace"]]
+  .map(([family,category],i)=>({family,category,variants:["400","700"],pop:i,date:"",isNew:false}));
+
+$("#cats").innerHTML=CATS.map(([v,l])=>`<button data-cat="${v}" class="${v==="all"?"on":""}">${l}</button>`).join("");
+$("#cats").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; cat=b.dataset.cat;
+  $$("#cats button").forEach(x=>x.classList.toggle("on",x===b)); shown=40; renderFonts(); };
+$("#fkey").value=store.get("apikey","");
+$("#fkeySave").onclick=()=>{ store.set("apikey",$("#fkey").value.trim()); fontsReady=false; fontsLoading=false; initFonts(); };
+
+async function fetchMetadata(){
+  const r=await fetch("https://fonts.google.com/metadata/fonts"); if(!r.ok) throw new Error(r.status);
+  let t=await r.text(); t=t.replace(/^\)\]\}'\s*/,""); const j=JSON.parse(t);
+  return j.familyMetadataList.map(f=>({family:f.family, category:normCat(f.category),
+    variants:Object.keys(f.fonts||{"400":1}), pop:f.popularity??9999, date:f.dateAdded||""}));
+}
+async function fetchApi(key){
+  const r=await fetch("https://www.googleapis.com/webfonts/v1/webfonts?sort=date&key="+encodeURIComponent(key));
+  if(!r.ok) throw new Error("API "+r.status); const j=await r.json();
+  const pop=await fetch("https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key="+encodeURIComponent(key)).then(x=>x.json()).catch(()=>null);
+  const rank={}; (pop?.items||[]).forEach((f,i)=>rank[f.family]=i);
+  const n=j.items.length;
+  return j.items.map((f,i)=>({family:f.family, category:normCat(f.category), variants:f.variants, pop:rank[f.family]??9999,
+    date:"", order:n-i}));
+}
+async function initFonts(){
+  if(fontsReady||fontsLoading) return; fontsLoading=true;
+  const key=store.get("apikey","");
+  $("#fstatus").textContent="Loading font list from Google Fonts…";
+  let src="";
+  try{ if(key){ fonts=await fetchApi(key); src="Google Fonts API"; } else throw 0; }
+  catch(e1){
+    try{ fonts=await fetchMetadata(); src="Google Fonts"; }
+    catch(e2){
+      const cached=store.get("fontcache",null);
+      if(cached&&cached.list?.length){ fonts=cached.list; src="saved copy from "+new Date(cached.t).toLocaleDateString(); }
+      else { fonts=FALLBACK; src=""; }
+    }
+  }
+  if(src && !src.startsWith("saved")) store.set("fontcache",{t:Date.now(),list:fonts});
+  // mark newest: last 60 days by date, or top 30 by API order
+  const now=Date.now();
+  fonts.forEach(f=>{ f.isNew = f.date ? (now-Date.parse(f.date))/864e5<=60 : false; });
+  if(!fonts.some(f=>f.date) && fonts.some(f=>f.order)){ [...fonts].sort((a,b)=>b.order-a.order).slice(0,30).forEach(f=>f.isNew=true); }
+  const newCount=fonts.filter(f=>f.isNew).length;
+  $("#fstatus").innerHTML = src
+    ? `${fonts.length.toLocaleString()} families · source: ${src}${newCount?` · <b style="color:var(--accent)">${newCount} new</b>`:""}`
+    : `Couldn't reach the live Google Fonts list, so you're seeing ${fonts.length} popular fonts. Add an API key below for the full, always-current catalog.`;
+  if(!fonts.some(f=>f.date||f.order)) $("#fsort").value = $("#fsort").value==="date" ? "pop" : $("#fsort").value;
+  fontsReady=true; fontsLoading=false; renderFonts();
+}
+function filtered(){
+  const q=$("#fq").value.trim().toLowerCase(), s=$("#fsort").value;
+  let L=fonts.filter(f=>(cat==="all"||f.category===cat)&&(!q||f.family.toLowerCase().includes(q)));
+  if(s==="alpha") L.sort((a,b)=>a.family.localeCompare(b.family));
+  if(s==="pop") L.sort((a,b)=>a.pop-b.pop);
+  if(s==="date") L.sort((a,b)=> (b.date||"").localeCompare(a.date||"") || (b.order||0)-(a.order||0) || a.pop-b.pop);
+  return L;
+}
+const loaded=new Set();
+function loadFamily(fam, spec){
+  const id=fam+(spec||""); if(loaded.has(id)) return; loaded.add(id);
+  const l=document.createElement("link"); l.rel="stylesheet";
+  l.href="https://fonts.googleapis.com/css2?family="+encodeURIComponent(fam).replace(/%20/g,"+")+(spec||"")+"&display=swap";
+  document.head.appendChild(l);
+}
+const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ loadFamily(e.target.dataset.fam); io.unobserve(e.target); } }),{rootMargin:"300px"});
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fallbackFor=c=>({"serif":"serif","monospace":"monospace","handwriting":"cursive","display":"sans-serif"}[c]||"sans-serif");
+function renderFonts(){
+  if(!fontsReady) return;
+  const L=filtered(), txt=esc($("#ftext").value||"Aa"), size=$("#fsize").value;
+  $("#flist").innerHTML = L.length ? L.slice(0,shown).map(f=>`
+    <div class="font" data-fam="${esc(f.family)}">
+      <div class="meta"><span class="name">${esc(f.family)}${f.isNew?'<span class="tag">NEW</span>':""}</span>
+        <span>${f.category.replace("-"," ")}${f.date?" · "+f.date.slice(0,7):""}</span></div>
+      <div class="prev" style="font-family:'${esc(f.family)}',${fallbackFor(f.category)};font-size:${size}px">${txt}</div>
+    </div>`).join("") : '<p class="muted" style="text-align:center">No fonts match.</p>';
+  $$("#flist .font").forEach(el=>io.observe(el));
+  $("#fmore").hidden = L.length<=shown;
+}
+$("#fmore").onclick=()=>{ shown+=40; renderFonts(); };
+let fqT; $("#fq").oninput=()=>{ clearTimeout(fqT); fqT=setTimeout(()=>{ shown=40; renderFonts(); },180); };
+$("#fsort").onchange=()=>{ shown=40; renderFonts(); };
+$("#fsize").oninput=e=>{ $("#fsOut").textContent=e.target.value+"px"; $$("#flist .prev").forEach(p=>p.style.fontSize=e.target.value+"px"); };
+$("#ftext").oninput=e=>{ const t=esc(e.target.value||"Aa"); $$("#flist .prev").forEach(p=>p.innerHTML=t); };
+window.addEventListener("scroll",()=>{ if($("#t-fonts").classList.contains("on") && !$("#fmore").hidden &&
+  innerHeight+scrollY>document.body.scrollHeight-600){ shown+=40; renderFonts(); } },{passive:true});
+
+function styles(f){
+  // returns [{w, ital}] from either "700italic"/"regular" or "700i"/"400"
+  const out=[]; (f.variants||["400"]).forEach(v=>{
+    const ital=/i(talic)?$/.test(v) && v!=="regular"; let w=parseInt(v,10); if(isNaN(w)) w=400;
+    if(!out.some(o=>o.w===w&&o.ital===ital)) out.push({w,ital}); });
+  return out.sort((a,b)=>(a.ital-b.ital)||(a.w-b.w));
+}
+function axisSpec(st){
+  const hasItal=st.some(s=>s.ital);
+  if(!hasItal){ const ws=[...new Set(st.map(s=>s.w))].sort((a,b)=>a-b); return ws.length===1&&ws[0]===400 ? "" : ":wght@"+ws.join(";"); }
+  return ":ital,wght@"+st.map(s=>`${s.ital?1:0},${s.w}`).sort((a,b)=>{const[x,y]=a.split(",").map(Number),[p,q]=b.split(",").map(Number);return x-p||y-q;}).join(";");
+}
+$("#flist").addEventListener("click",e=>{
+  const el=e.target.closest(".font"); if(!el) return; const f=fonts.find(x=>x.family===el.dataset.fam); if(!f) return;
+  const st=styles(f), spec=axisSpec(st); loadFamily(f.family, spec);
+  const famUrl=encodeURIComponent(f.family).replace(/%20/g,"+");
+  const link=`<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=${famUrl}${spec}&display=swap" rel="stylesheet">`;
+  const css=`font-family: "${f.family}", ${fallbackFor(f.category)};`;
+  const txt=esc($("#ftext").value||"The quick brown fox");
+  $("#sheetIn").innerHTML=`
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0;font-size:19px">${esc(f.family)}${f.isNew?'<span class="tag">NEW</span>':""}</h2>
+      <button class="btn" id="closeSheet">Close</button></div>
+    <p class="muted" style="margin:4px 0 12px">${f.category.replace("-"," ")} · ${st.length} style${st.length>1?"s":""}${f.date?" · added "+f.date:""} · free &amp; open source</p>
+    <textarea id="sheetTxt" rows="2" aria-label="Preview text">${txt}</textarea>
+    <div id="styles">${st.map(s=>`<div style="border-top:1px solid var(--line);padding:10px 0">
+      <div class="muted">${s.w}${s.ital?" italic":""}</div>
+      <div class="sp" style="font-family:'${esc(f.family)}',${fallbackFor(f.category)};font-weight:${s.w};font-style:${s.ital?"italic":"normal"};font-size:28px;line-height:1.2;word-break:break-word">${txt}</div></div>`).join("")}</div>
+    <h3 style="font-size:14px;margin:14px 0 4px">Use on the web</h3>
+    <pre>${esc(link)}</pre><button class="btn" id="cpLink">Copy &lt;link&gt;</button>
+    <pre>${esc(css)}</pre><button class="btn" id="cpCss">Copy CSS</button>
+    <p style="margin-top:14px"><a href="https://fonts.google.com/specimen/${famUrl}" target="_blank" rel="noopener">Download font files on Google Fonts ↗</a></p>`;
+  $("#sheet").classList.add("on");
+  $("#closeSheet").onclick=()=>$("#sheet").classList.remove("on");
+  $("#cpLink").onclick=()=>copy(link,"Link copied"); $("#cpCss").onclick=()=>copy(css,"CSS copied");
+  $("#sheetTxt").oninput=ev=>{ const t=esc(ev.target.value||"Aa"); $$("#styles .sp").forEach(p=>p.innerHTML=t); };
+});
+$("#sheet").onclick=e=>{ if(e.target.id==="sheet") $("#sheet").classList.remove("on"); };
+
+drawGrid();
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+package app.palettez.update
+
+enum class ChangeTag(val label: String) {
+    New("NEW"),
+    Improved("IMPROVED"),
+    Fixed("FIXED")
+}
+
+data class ReleaseItem(
+    val title: String,
+    val description: String,
+    val tag: ChangeTag
+)
+
+data class ReleaseNote(
+    val versionCode: Int,
+    val versionName: String,
+    val releaseDate: String,
+    val headline: String,
+    val items: List<ReleaseItem>
+)
+
+object WhatsNewRegistry {
+
+    val RELEASES = listOf(
+        ReleaseNote(
+            versionCode = 2,
+            versionName = "1.1.0",
+            releaseDate = "November 2026",
+            headline = "You're on the latest build! Here is what's new in Palettez:",
+            items = listOf(
+                ReleaseItem(
+                    title = "On-Device Grid Analysis",
+                    description = "Upload any poster, flyer, or editorial composition to reverse-engineer columns, margins, and gutters on-device, and instantly apply it to the Grid or Layouts editor.",
+                    tag = ChangeTag.New
+                ),
+                ReleaseItem(
+                    title = "Brand Identity Specimen Export",
+                    description = "Export presentation-ready brand cards in 16:9 slides and 1:1 squares with multi-color-space readouts (HEX, RGB, CMYK, HSL, OKLab) and WCAG certification.",
+                    tag = ChangeTag.New
+                ),
+                ReleaseItem(
+                    title = "Font Pairing Suggestions & Studio",
+                    description = "Intelligent archetype pairings across Google Fonts with an interactive split specimen studio, live typing, size sliders, role swap (⇄), and combined TTF / CSS export.",
+                    tag = ChangeTag.New
+                ),
+                ReleaseItem(
+                    title = "Image Recents & Smart Extraction",
+                    description = "Recent image palettes are saved locally and accessible on the Palette home tab for quick restoration and exploration.",
+                    tag = ChangeTag.Improved
+                ),
+                ReleaseItem(
+                    title = "Deep Dark Mode & UI Contrast",
+                    description = "Comprehensive contrast enhancements across all tools, status bar edge-to-edge rendering, and color-matched font cards.",
+                    tag = ChangeTag.Improved
+                )
+            )
+        ),
+        ReleaseNote(
+            versionCode = 1,
+            versionName = "1.0.0",
+            releaseDate = "Kickoff Release",
+            headline = "Welcome to Palettez — The all-in-one local-first design kit.",
+            items = listOf(
+                ReleaseItem(
+                    title = "Palette from Image",
+                    description = "Extract 2–12 colors from photos with real-time coverage percentages and multiple color modes.",
+                    tag = ChangeTag.New
+                ),
+                ReleaseItem(
+                    title = "Presets & Color System",
+                    description = "14 curated designer presets, 10-step scales, semantic roles, and code export.",
+                    tag = ChangeTag.New
+                ),
+                ReleaseItem(
+                    title = "Column Grids & Panel Layouts",
+                    description = "Custom columns, gutters, margins, and 15 panel layout templates with procedural shuffle.",
+                    tag = ChangeTag.New
+                ),
+                ReleaseItem(
+                    title = "Google Fonts Browser",
+                    description = "Full catalog browsing, specimen testing, CSS embed codes, and direct TTF downloads.",
+                    tag = ChangeTag.New
+                )
+            )
+        )
+    )
+
+    fun getLatestRelease(): ReleaseNote = RELEASES.first()
+
+    fun getReleaseForVersion(versionCode: Int): ReleaseNote =
+        RELEASES.firstOrNull { it.versionCode == versionCode } ?: getLatestRelease()
+}

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Palettez – Fonts</title>
+<script src="./dc-lite.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700&family=Inter&family=Montserrat&family=Playfair+Display&family=Lora&family=Bebas+Neue&family=Caveat&family=JetBrains+Mono&family=DM+Serif+Display&family=Space+Grotesk&family=Roboto&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#151515}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; background: #EFE9DF; color: #151515; font-family: Figtree, system-ui, sans-serif; overflow: hidden">
+
+  <main style="position: absolute; inset: 0; overflow-y: auto; padding: 20px 20px 120px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box">
+
+    <header style="display: flex; align-items: flex-end; gap: 12px">
+      <div style="flex: 1">
+        <p style="margin: 0 0 2px; font-size: 15px; line-height: 20px; font-weight: 500; color: #5E584F">Google Fonts, free &amp; open source</p>
+        <h1 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 52px; line-height: 56px; letter-spacing: 0.5px">FONTS</h1>
+      </div>
+      <button type="button" aria-label="Refresh font list" onClick="{{refresh}}" style="width: 52px; height: 52px; border: 0; border-radius: 50%; background: #FBF8F3; color: #151515; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 4px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"></path><path d="M21 3v5h-5"></path></svg>
+      </button>
+    </header>
+
+    <div style="position: relative; flex: none">
+      <label for="font-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search Google Fonts</label>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5E584F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 18px; top: 17px"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      <input id="font-search" type="search" placeholder="Search 'serif', 'mono', a name…" value="{{query}}" onChange="{{setQuery}}" style="width: 100%; box-sizing: border-box; height: 56px; padding: 0 18px 0 50px; border: 0; border-radius: 28px; background: #FBF8F3; font: 500 16px/24px Figtree, sans-serif; color: #151515">
+    </div>
+
+    <div style="display: flex; gap: 10px; overflow-x: auto; flex: none; margin: 0 -20px; padding: 2px 20px 4px" role="group" aria-label="Category">
+      <sc-for list="{{cats}}" as="c" hint-placeholder-count="5">
+        <button type="button" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}" style="{{c.style}}">
+          <span style="{{c.glyphStyle}}">Aa</span>
+          <span style="font: 700 14px/18px Figtree, sans-serif">{{c.label}}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 8px">
+      <h2 style="flex: 1; margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 26px; line-height: 32px; letter-spacing: 0.3px">{{heading}}</h2>
+      <div style="display: flex; gap: 4px; padding: 4px; border-radius: 22px; background: #FBF8F3" role="radiogroup" aria-label="Sort">
+        <sc-for list="{{sorts}}" as="o" hint-placeholder-count="3">
+          <button type="button" role="radio" aria-checked="{{o.checked}}" onClick="{{o.pick}}" style="{{o.style}}">{{o.label}}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="position: relative; flex: none">
+      <label for="font-preview" style="position: absolute; left: 18px; top: 8px; font-size: 11px; line-height: 14px; font-weight: 700; letter-spacing: 0.6px; color: #5E584F">PREVIEW TEXT</label>
+      <input id="font-preview" value="{{text}}" onChange="{{setText}}" style="width: 100%; box-sizing: border-box; height: 56px; padding: 18px 18px 0; border: 1.5px solid #D7CFC2; border-radius: 20px; background: transparent; font: 500 15px/20px Figtree, sans-serif; color: #151515">
+    </div>
+    <p style="margin: -6px 0 0; font-size: 12px; line-height: 17px; color: #5E584F">[N] families · [N] new in the last 60 days · up to date</p>
+
+    <sc-for list="{{fonts}}" as="f" hint-placeholder-count="4">
+      <a href="FontDetail.html" style="{{f.cardStyle}}">
+        <span style="display: flex; align-items: center; gap: 8px">
+          <span style="flex: 1; font: 700 15px/20px Figtree, sans-serif">{{f.name}}</span>
+          <span style="{{f.tagStyle}}">{{f.cat}}</span>
+          <span style="{{f.arrowStyle}}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"></path></svg>
+          </span>
+        </span>
+        <span style="{{f.previewStyle}}">{{text}}</span>
+      </a>
+    </sc-for>
+    <sc-if value="{{empty}}" hint-placeholder-val="{{false}}">
+      <p style="margin: 16px 0; text-align: center; font-size: 15px; color: #5E584F">No fonts match.</p>
+    </sc-if>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="position: absolute; left: 24px; right: 24px; bottom: 102px; padding: 13px 18px; border-radius: 22px; background: #FBF8F3; color: #151515; font-size: 14px; line-height: 20px; font-weight: 600; box-shadow: 0 6px 20px rgba(21,21,21,0.18)">{{toast}}</div>
+  </sc-if>
+
+  <nav aria-label="Main" style="position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); height: 64px; padding: 6px; box-sizing: border-box; border-radius: 32px; background: #151515; display: flex; align-items: center; gap: 4px; box-shadow: 0 10px 30px rgba(21,21,21,0.25)">
+    <a href="Main.html" aria-label="Palette" style="width: 52px; height: 52px; border-radius: 50%; color: #FBF8F3; display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-1.2-1-1.4-1-2.5 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5C21 6.3 17 3 12 3Z"></path><circle cx="7.5" cy="11" r="1"></circle><circle cx="10" cy="7" r="1"></circle><circle cx="15" cy="7.5" r="1"></circle></svg>
+    </a>
+    <a href="Grid.html" aria-label="Grid" style="width: 52px; height: 52px; border-radius: 50%; color: #FBF8F3; display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M9 3v18M15 3v18M3 9h18M3 15h18"></path></svg>
+    </a>
+    <span aria-current="page" style="height: 52px; padding: 0 20px 0 16px; border-radius: 26px; background: #FBF8F3; color: #151515; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20 10 4h1l6 16M6.5 14h8M17 20h4"></path></svg>
+      Fonts
+    </span>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+var FONTS = [
+  ['Roboto', 'Sans', "'Roboto', sans-serif"],
+  ['Playfair Display', 'Serif', "'Playfair Display', serif"],
+  ['Montserrat', 'Sans', "'Montserrat', sans-serif"],
+  ['Bebas Neue', 'Display', "'Bebas Neue', sans-serif"],
+  ['Lora', 'Serif', "'Lora', serif"],
+  ['Caveat', 'Handwriting', "'Caveat', cursive"],
+  ['Inter', 'Sans', "'Inter', sans-serif"],
+  ['DM Serif Display', 'Serif', "'DM Serif Display', serif"],
+  ['JetBrains Mono', 'Mono', "'JetBrains Mono', monospace"],
+  ['Space Grotesk', 'Sans', "'Space Grotesk', sans-serif"]
+];
+// background, text color
+var BLOCKS = [['#6A58CC', '#FFFFFF'], ['#F4C542', '#151515'], ['#4E7A5B', '#FFFFFF'], ['#E2603F', '#151515'], ['#AFCBEA', '#151515'], ['#A7D86E', '#151515']];
+var CATS = [
+  ['All', '#151515', '#FFFFFF', "Anton, sans-serif"],
+  ['Sans', '#6A58CC', '#FFFFFF', "'Montserrat', sans-serif"],
+  ['Serif', '#F4C542', '#151515', "'Playfair Display', serif"],
+  ['Display', '#E2603F', '#151515', "'Bebas Neue', sans-serif"],
+  ['Handwriting', '#4E7A5B', '#FFFFFF', "'Caveat', cursive"],
+  ['Mono', '#AFCBEA', '#151515', "'JetBrains Mono', monospace"]
+];
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { q: '', cat: 'All', sort: 'pop', text: 'Sphinx of black quartz, judge my vow', toast: '' }; }
+  componentWillUnmount() { clearTimeout(this.t); }
+  say(msg) { var self = this; this.setState({ toast: msg }); clearTimeout(this.t); this.t = setTimeout(function () { self.setState({ toast: '' }); }, 2200); }
+  renderVals() {
+    var self = this, S = this.state, q = S.q.trim().toLowerCase();
+    var list = FONTS.filter(function (f) { return (S.cat === 'All' || f[1] === S.cat) && (!q || f[0].toLowerCase().indexOf(q) >= 0 || f[1].toLowerCase().indexOf(q) >= 0); });
+    if (S.sort === 'alpha') list = list.slice().sort(function (a, b) { return a[0].localeCompare(b[0]); });
+    var cats = CATS.map(function (c) {
+      var sel = S.cat === c[0];
+      return {
+        label: c[0], pressed: sel ? 'true' : 'false',
+        pick: function () { self.setState({ cat: c[0] }); },
+        style: 'flex: none; width: 104px; height: 112px; border: 0; border-radius: 24px; padding: 14px; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; text-align: left; background: ' + c[1] + '; color: ' + c[2] + '; box-shadow: ' + (sel ? '0 0 0 3px #EFE9DF, 0 0 0 5px #151515' : 'none'),
+        glyphStyle: 'font-family: ' + c[3] + '; font-size: 36px; line-height: 40px'
+      };
+    });
+    var sorts = [['new', 'New'], ['pop', 'Popular'], ['alpha', 'A–Z']].map(function (o) {
+      var sel = S.sort === o[0];
+      return {
+        label: o[1], checked: sel ? 'true' : 'false',
+        pick: function () {
+          if (o[0] === 'new') { self.say('New sorts by the date each family was added, from the live catalog'); return; }
+          self.setState({ sort: o[0] });
+        },
+        style: 'height: 36px; padding: 0 12px; border: 0; border-radius: 18px; cursor: pointer; font: 600 13px/18px Figtree, sans-serif; background: ' + (sel ? '#151515' : 'transparent') + '; color: ' + (sel ? '#FFFFFF' : '#151515')
+      };
+    });
+    return {
+      query: S.q, text: S.text || 'Aa', cats: cats, sorts: sorts, toast: S.toast, empty: list.length === 0,
+      heading: S.cat === 'All' ? 'ALL FAMILIES' : S.cat.toUpperCase(),
+      setQuery: function (e) { self.setState({ q: e.target.value }); },
+      setText: function (e) { self.setState({ text: e.target.value }); },
+      refresh: function () { self.say('Font list is up to date'); },
+      fonts: list.map(function (f, i) {
+        var b = BLOCKS[i % BLOCKS.length], onDark = b[1] === '#FFFFFF';
+        return {
+          name: f[0], cat: f[1],
+          cardStyle: 'display: flex; flex-direction: column; gap: 10px; flex: none; border-radius: 26px; padding: 18px 18px 22px; text-decoration: none; background: ' + b[0] + '; color: ' + b[1],
+          tagStyle: 'height: 28px; padding: 0 10px; border-radius: 14px; display: flex; align-items: center; font: 700 12px/16px Figtree, sans-serif; background: ' + (onDark ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.55)'),
+          arrowStyle: 'width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: ' + (onDark ? '#FFFFFF' : '#151515') + '; color: ' + (onDark ? '#151515' : '#FFFFFF'),
+          previewStyle: 'display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-family: ' + f[2] + '; font-size: 32px; line-height: 38px'
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

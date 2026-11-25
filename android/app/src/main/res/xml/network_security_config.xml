@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Restricts network traffic to HTTPS only.
+    The only outbound hosts Palettez ever contacts are the three Google Fonts hosts:
+      - fonts.google.com        (font catalog metadata)
+      - fonts.googleapis.com    (CSS2 font descriptor API)
+      - fonts.gstatic.com       (TTF font file CDN)
+    All other cleartext traffic is blocked by the base-config below.
+-->
+<network-security-config>
+    <!-- Block all cleartext (HTTP) traffic by default. -->
+    <base-config cleartextTrafficPermitted="false" />
+
+    <!-- Explicitly allow HTTPS to the three Google Fonts hosts. -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="false">fonts.google.com</domain>
+        <domain includeSubdomains="false">fonts.googleapis.com</domain>
+        <domain includeSubdomains="false">fonts.gstatic.com</domain>
+    </domain-config>
+</network-security-config>

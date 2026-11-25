@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Palettez – Layout editor</title>
+<script src="./dc-lite.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#151515}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; background: #EFE9DF; color: #151515; font-family: Figtree, system-ui, sans-serif; overflow: hidden">
+
+  <main style="position: absolute; inset: 0; overflow-y: auto; padding: 20px 20px 40px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box">
+
+    <header style="display: flex; align-items: center; gap: 12px">
+      <a href="GridLayouts.html" aria-label="Back to layouts" style="width: 52px; height: 52px; flex: none; border-radius: 50%; background: #FBF8F3; color: #151515; display: flex; align-items: center; justify-content: center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+      </a>
+      <div style="flex: 1; min-width: 0">
+        <h1 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 34px; line-height: 40px; letter-spacing: 0.4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{title}}</h1>
+        <p style="margin: 0; font-size: 13px; line-height: 18px; font-weight: 600; color: #5E584F">{{subtitle}}</p>
+      </div>
+    </header>
+
+    <section aria-label="Preview" style="background: #AFCBEA; border-radius: 28px; padding: 18px; display: flex; justify-content: center; align-items: center; min-height: 360px; flex: none">
+      <div role="img" aria-label="{{previewAria}}" style="{{preview.boxStyle}}">
+        <sc-for list="{{preview.items}}" as="it" hint-placeholder-count="6">
+          <div style="{{it}}"></div>
+        </sc-for>
+      </div>
+    </section>
+
+    <div style="display: flex; gap: 8px">
+      <button type="button" onClick="{{shuffle}}" style="flex: 1; height: 56px; border: 0; border-radius: 28px; background: #A7D86E; color: #151515; display: flex; align-items: center; justify-content: center; gap: 10px; font: 400 22px/28px Anton, Impact, sans-serif; letter-spacing: 0.6px; cursor: pointer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"></path><path d="m18 2 4 4-4 4"></path><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"></path><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"></path><path d="m18 14 4 4-4 4"></path></svg>
+        SHUFFLE
+      </button>
+      <button type="button" aria-label="Mirror left to right" aria-pressed="{{mxPressed}}" onClick="{{flipX}}" style="{{mxStyle}}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M8 7l-5 5 5 5V7zM16 7l5 5-5 5V7z"></path></svg>
+      </button>
+      <button type="button" aria-label="Mirror top to bottom" aria-pressed="{{myPressed}}" onClick="{{flipY}}" style="{{myStyle}}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18M7 8l5-5 5 5H7zM7 16l5 5 5-5H7z"></path></svg>
+      </button>
+    </div>
+
+    <div>
+      <h2 style="margin: 0 0 10px; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 28px; letter-spacing: 0.3px">LAYOUTS</h2>
+      <div style="display: flex; gap: 10px; overflow-x: auto; margin: 0 -20px; padding: 4px 20px 6px" role="radiogroup" aria-label="Layout">
+        <sc-for list="{{strip}}" as="t" hint-placeholder-count="5">
+          <button type="button" role="radio" aria-checked="{{t.checked}}" aria-label="{{t.name}}" onClick="{{t.pick}}" style="{{t.btnStyle}}">
+            <span style="{{t.boxStyle}}">
+              <sc-for list="{{t.items}}" as="it" hint-placeholder-count="5">
+                <span style="{{it}}"></span>
+              </sc-for>
+            </span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -20px; padding: 0 20px" role="radiogroup" aria-label="Page size">
+      <sc-for list="{{aspects}}" as="a" hint-placeholder-count="5">
+        <button type="button" role="radio" aria-checked="{{a.checked}}" onClick="{{a.pick}}" style="{{a.style}}">{{a.label}}</button>
+      </sc-for>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{steppers}}" as="t" hint-placeholder-count="3">
+        <div style="background: #FBF8F3; border-radius: 22px; padding: 12px 10px 10px; display: flex; flex-direction: column; align-items: center; gap: 4px">
+          <span id="{{t.id}}" style="font-size: 12px; line-height: 16px; font-weight: 700; color: #5E584F">{{t.label}}</span>
+          <output aria-labelledby="{{t.id}}" style="font-family: Anton, Impact, sans-serif; font-size: 28px; line-height: 34px">{{t.value}}</output>
+          <div style="display: flex; gap: 6px">
+            <button type="button" aria-label="{{t.downAria}}" onClick="{{t.down}}" style="width: 44px; height: 44px; border: 1.5px solid #D7CFC2; border-radius: 50%; background: transparent; color: #151515; display: flex; align-items: center; justify-content: center; cursor: pointer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg>
+            </button>
+            <button type="button" aria-label="{{t.upAria}}" onClick="{{t.up}}" style="width: 44px; height: 44px; border: 0; border-radius: 50%; background: #151515; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            </button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 28px; background: #FBF8F3" role="radiogroup" aria-label="Style">
+      <sc-for list="{{styles}}" as="s" hint-placeholder-count="3">
+        <button type="button" role="radio" aria-checked="{{s.checked}}" onClick="{{s.pick}}" style="{{s.style}}">
+          <span style="{{s.dot}}"></span>
+          {{s.label}}
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; gap: 8px">
+      <button type="button" onClick="{{savePng}}" style="flex: 1; height: 56px; border: 0; border-radius: 28px; background: #151515; color: #FFFFFF; font: 400 22px/28px Anton, Impact, sans-serif; letter-spacing: 0.6px; cursor: pointer">SAVE PNG</button>
+      <button type="button" onClick="{{saveSvg}}" style="height: 56px; padding: 0 22px; border: 1.5px solid #151515; border-radius: 28px; background: transparent; color: #151515; font: 400 22px/28px Anton, Impact, sans-serif; letter-spacing: 0.6px; cursor: pointer">SVG</button>
+    </div>
+  </main>
+
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="position: absolute; left: 24px; right: 24px; bottom: 28px; padding: 13px 18px; border-radius: 22px; background: #151515; color: #FFFFFF; font-size: 14px; line-height: 20px; font-weight: 600; box-shadow: 0 6px 20px rgba(21,21,21,0.25)">{{toast}}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+// ---- Panel layout engine (shared by the Layouts artboards) ----
+// A layout is a tree of cuts. Each cut runs edge to edge across a four-sided panel,
+// so every panel stays a quadrilateral, even when cuts are slanted.
+var FAMILIES = [
+  { key: 'classic', name: 'Classic', rule: 'Straight tiers that read left to right, top to bottom. The safe default for steady pacing.' },
+  { key: 'stacks', name: 'Stacks', rule: 'Columns lead. Tall panels give height, falls and full-figure shots room.' },
+  { key: 'slants', name: 'Slants', rule: 'Tilted cuts add speed and tension. Keep each tilt small and alternate direction.' },
+  { key: 'insets', name: 'Insets', rule: 'One floating panel breaks the grid for the key moment, ringed by a gutter.' },
+  { key: 'mosaic', name: 'Mosaic', rule: 'Nested splits at golden and off-grid ratios. One big panel anchors the page.' }
+];
+var TEMPLATES = [
+  { name: 'Tiers', fam: 'classic', node: { d: 'h', r: [1.1, 1, 0.9], c: [{ d: 'v', r: [1, 1] }, { d: 'v', r: [0.65, 1.35] }, null] } },
+  { name: 'Hero base', fam: 'classic', node: { d: 'h', r: [0.75, 0.75, 1.5], c: [{ d: 'v', r: [2, 1] }, { d: 'v', r: [1.3, 0.75, 0.75] }, null] } },
+  { name: 'Brick', fam: 'classic', node: { d: 'h', r: [1, 1, 1], c: [{ d: 'v', r: [1.1, 1] }, { d: 'v', r: [0.6, 1.4] }, { d: 'v', r: [1.1, 0.9] }] } },
+  { name: 'Tall left', fam: 'stacks', node: { d: 'v', r: [1, 1], c: [null, { d: 'h', r: [1, 1.25] }] } },
+  { name: 'Triptych', fam: 'stacks', node: { d: 'h', r: [0.55, 1.45], c: [{ d: 'v', r: [0.6, 1.4] }, { d: 'v', r: [1.2, 0.8, 0.8] }] } },
+  { name: 'Ladder', fam: 'stacks', node: { d: 'v', r: [1.1, 0.9], c: [{ d: 'h', r: [0.8, 0.6, 1] }, null] } },
+  { name: 'Tilt', fam: 'slants', node: { d: 'h', r: [0.8, 1, 1, 1.1], s: [0.05, -0.06, 0.08], c: [null, { d: 'v', r: [1, 1], s: [0.12] }, null, null] } },
+  { name: 'Wedge', fam: 'slants', node: { d: 'h', r: [1, 1.5], s: [0.14], c: [{ d: 'v', r: [1, 1], s: [-0.08] }, null] } },
+  { name: 'Rush', fam: 'slants', node: { d: 'h', r: [1, 1.2], s: [-0.1], c: [{ d: 'v', r: [1, 1, 1], s: [0.1, 0.1] }, { d: 'v', r: [1, 1.3], s: [-0.14] }] } },
+  { name: 'Spotlight', fam: 'insets', node: { inset: [0.22, 0.5, 0.56, 0.34], base: { d: 'h', r: [0.55, 1.45], c: [null, { d: 'v', r: [1, 1] }] } } },
+  { name: 'Corner pop', fam: 'insets', node: { inset: [0.52, 0.05, 0.43, 0.3], base: { d: 'h', r: [1, 1], c: [{ d: 'v', r: [1, 1] }, null] } } },
+  { name: 'Center stage', fam: 'insets', node: { inset: [0.17, 0.31, 0.66, 0.38], base: { d: 'h', r: [1, 1, 1], c: [{ d: 'v', r: [1, 1] }, null, { d: 'v', r: [1, 1, 1] }] } } },
+  { name: 'Spiral', fam: 'mosaic', node: { d: 'h', r: [1.618, 1], c: [null, { d: 'v', r: [1.618, 1], c: [null, { d: 'h', r: [1, 1.618], c: [null, { d: 'v', r: [1, 1.618] }] }] }] } },
+  { name: 'Off-grid', fam: 'mosaic', node: { d: 'v', r: [1, 1.4], c: [{ d: 'h', r: [1, 0.6, 1] }, { d: 'h', r: [0.7, 1.3], c: [null, { d: 'v', r: [1, 1] }] }] } },
+  { name: 'Window', fam: 'mosaic', node: { d: 'h', r: [0.5, 1.6, 0.5], c: [{ d: 'v', r: [1.6, 1] }, { d: 'v', r: [0.5, 1.6, 0.5], c: [null, null, { d: 'h', r: [1, 1] }] }, { d: 'v', r: [1, 1.6] }] } }
+];
+var PALETTE = ['#E4572E', '#F2A65A', '#8C5383', '#1B998B', '#F6E7CB', '#2E4057', '#AFCBEA', '#A7D86E'];
+var STYLES = {
+  paper: { bg: '#D7CFC2', panel: function () { return '#FFFFFF'; } },
+  ink: { bg: '#151515', panel: function () { return '#FBF8F3'; } },
+  palette: { bg: '#151515', panel: function (i) { return PALETTE[i % PALETTE.length]; } }
+};
+
+function lerp(a, b, t) { return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t }; }
+function dist(a, b) { return Math.max(1e-6, Math.hypot(b.x - a.x, b.y - a.y)); }
+function rect(x, y, w, h) { return [{ x: x, y: y }, { x: x + w, y: y }, { x: x + w, y: y + h }, { x: x, y: y + h }]; }
+
+function splitNode(node, q, g, sm, out) {
+  if (!node) { out.push({ pts: q, kind: 'panel' }); return; }
+  if (node.inset) {
+    splitNode(node.base, q, g, sm, out);
+    var xs = q.map(function (p) { return p.x; }), ys = q.map(function (p) { return p.y; });
+    var x0 = Math.min.apply(null, xs), y0 = Math.min.apply(null, ys), bw = Math.max.apply(null, xs) - x0, bh = Math.max.apply(null, ys) - y0;
+    var i = node.inset, x = x0 + i[0] * bw, y = y0 + i[1] * bh, w = i[2] * bw, h = i[3] * bh;
+    out.push({ pts: rect(x - g, y - g, w + 2 * g, h + 2 * g), kind: 'ring' });
+    out.push({ pts: rect(x, y, w, h), kind: 'panel' });
+    return;
+  }
+  var r = node.r, n = r.length, tot = 0, acc = 0, cuts = [];
+  r.forEach(function (v) { tot += v; });
+  for (var k = 0; k < n - 1; k++) {
+    acc += r[k];
+    var c = acc / tot, s = ((node.s && node.s[k]) || 0) * sm;
+    cuts.push([c - s / 2, c + s / 2]);
+  }
+  var tl = q[0], tr = q[1], br = q[2], bl = q[3];
+  var e1a, e1b, e2a, e2b;
+  if (node.d === 'v') { e1a = tl; e1b = tr; e2a = bl; e2b = br; } else { e1a = tl; e1b = bl; e2a = tr; e2b = br; }
+  var d1 = g / 2 / dist(e1a, e1b), d2 = g / 2 / dist(e2a, e2b);
+  for (var j = 0; j < n; j++) {
+    var s1 = j === 0 ? 0 : cuts[j - 1][0] + d1, s2 = j === 0 ? 0 : cuts[j - 1][1] + d2;
+    var t1 = j === n - 1 ? 1 : cuts[j][0] - d1, t2 = j === n - 1 ? 1 : cuts[j][1] - d2;
+    var A = lerp(e1a, e1b, s1), B = lerp(e1a, e1b, t1), C = lerp(e2a, e2b, t2), D = lerp(e2a, e2b, s2);
+    splitNode(node.c ? node.c[j] : null, node.d === 'v' ? [A, B, C, D] : [A, D, C, B], g, sm, out);
+  }
+}
+
+// Returns positioned layers for a w×h px box. Page units: 1000 wide.
+function renderLayout(node, w, h, o) {
+  o = o || {};
+  var PW = 1000, PH = 1000 * h / w, sc = w / PW;
+  var g = o.gutter == null ? 24 : o.gutter, m = o.margin == null ? 40 : o.margin, sm = o.slant == null ? 1 : o.slant;
+  var st = STYLES[o.style || 'paper'], out = [];
+  splitNode(node, rect(m, m, PW - 2 * m, PH - 2 * m), g, sm, out);
+  var idx = 0;
+  var items = out.map(function (it) {
+    var pts = it.pts.map(function (p) {
+      var x = o.mirrorX ? PW - p.x : p.x, y = o.mirrorY ? PH - p.y : p.y;
+      return (Math.round(x * sc * 10) / 10) + 'px ' + (Math.round(y * sc * 10) / 10) + 'px';
+    }).join(', ');
+    var color = it.kind === 'ring' ? st.bg : st.panel(idx++);
+    return 'position: absolute; inset: 0; clip-path: polygon(' + pts + '); background: ' + color;
+  });
+  return { items: items, count: idx, boxStyle: 'position: relative; overflow: hidden; flex: none; width: ' + w + 'px; height: ' + h + 'px; background: ' + st.bg };
+}
+
+function mulberry(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function countPanels(node) {
+  if (!node) return 1;
+  if (node.inset) return countPanels(node.base) + 1;
+  var n = 0; for (var i = 0; i < node.r.length; i++) n += countPanels(node.c ? node.c[i] : null); return n;
+}
+// Builds a new layout from the same rules: 2–3 cuts per level, alternating direction,
+// ratios between 0.6 and 1.5, optional small slants and an occasional inset.
+function generateLayout(seed, slantChance) {
+  for (var tries = 0; tries < 30; tries++) {
+    var rand = mulberry(seed * 7919 + tries);
+    var grow = function (depth, dir) {
+      if (depth > 0 && (depth >= 3 || rand() < 0.25 + depth * 0.2)) return null;
+      var n = 2 + Math.floor(rand() * (depth === 0 ? 3 : 2)), r = [], s = [], c = [];
+      for (var i = 0; i < n; i++) r.push(Math.round((0.6 + rand() * 0.9) * 100) / 100);
+      for (var k = 0; k < n - 1; k++) s.push(rand() < slantChance ? Math.round((rand() - 0.5) * 0.24 * 100) / 100 : 0);
+      for (var j = 0; j < n; j++) c.push(grow(depth + 1, dir === 'h' ? 'v' : 'h'));
+      return { d: dir, r: r, s: s, c: c };
+    };
+    var node = grow(0, rand() < 0.75 ? 'h' : 'v');
+    if (rand() < 0.2) node = { inset: [0.15 + rand() * 0.3, 0.2 + rand() * 0.4, 0.4, 0.28], base: node };
+    var n = countPanels(node);
+    if (n >= 4 && n <= 9) return node;
+  }
+  return TEMPLATES[0].node;
+}
+// ---- end engine ----
+
+var ASPECTS = [['3:4', 3, 4], ['4:5', 4, 5], ['1:1', 1, 1], ['9:16', 9, 16], ['A4', 1, 1.414]];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tpl: 6, seed: 0, aspect: 0, gutter: 24, margin: 40, slant: 100, mx: false, my: false, style: 'paper', toast: '' };
+  }
+  componentWillUnmount() { clearTimeout(this.t); }
+  say(msg) { var self = this; this.setState({ toast: msg }); clearTimeout(this.t); this.t = setTimeout(function () { self.setState({ toast: '' }); }, 1800); }
+  stepper(key, label, step, lo, hi, unit) {
+    var self = this;
+    var set = function (n) { var o = {}; o[key] = Math.max(lo, Math.min(hi, n)); self.setState(o); };
+    return {
+      id: 'le-' + key, label: label, value: this.state[key] + (unit || ''),
+      downAria: 'Less ' + label.toLowerCase(), upAria: 'More ' + label.toLowerCase(),
+      down: function () { set(self.state[key] - step); }, up: function () { set(self.state[key] + step); }
+    };
+  }
+  renderVals() {
+    var self = this, S = this.state;
+    var famName = {}; FAMILIES.forEach(function (f) { famName[f.key] = f.name; });
+    var isGen = S.tpl === -1;
+    var node = isGen ? generateLayout(S.seed, 0.45) : TEMPLATES[S.tpl].node;
+    var A = ASPECTS[S.aspect], bw = 314, bh = Math.round(314 * A[2] / A[1]);
+    if (bh > 360) { bh = 360; bw = Math.round(360 * A[1] / A[2]); }
+    var opts = { gutter: S.gutter, margin: S.margin, slant: S.slant / 100, mirrorX: S.mx, mirrorY: S.my, style: S.style };
+    var preview = renderLayout(node, bw, bh, opts);
+    preview.boxStyle += '; border-radius: 6px; box-shadow: 0 10px 26px rgba(21,21,21,0.18)';
+    var name = isGen ? 'Shuffle #' + S.seed : TEMPLATES[S.tpl].name;
+    var tog = function (on) { return 'width: 56px; height: 56px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; ' + (on ? 'border: 0; background: #151515; color: #FFFFFF' : 'border: 1.5px solid #D7CFC2; background: #FBF8F3; color: #151515'); };
+
+    return {
+      title: name.toUpperCase(),
+      subtitle: (isGen ? 'Generated' : famName[TEMPLATES[S.tpl].fam]) + ' · ' + preview.count + ' panels · ' + A[0],
+      previewAria: name + ' layout with ' + preview.count + ' panels',
+      preview: preview, toast: S.toast,
+      mxPressed: S.mx ? 'true' : 'false', myPressed: S.my ? 'true' : 'false',
+      mxStyle: tog(S.mx), myStyle: tog(S.my),
+      flipX: function () { self.setState({ mx: !self.state.mx }); },
+      flipY: function () { self.setState({ my: !self.state.my }); },
+      shuffle: function () { self.setState({ tpl: -1, seed: Math.floor(Math.random() * 9000) + 100, mx: false, my: false }); },
+      strip: TEMPLATES.map(function (t, i) {
+        var sel = S.tpl === i, r = renderLayout(t.node, 60, 80, { gutter: 30, margin: 40, style: S.style });
+        return {
+          name: t.name, checked: sel ? 'true' : 'false', items: r.items,
+          pick: function () { self.setState({ tpl: i, mx: false, my: false }); },
+          boxStyle: r.boxStyle + '; display: block; border-radius: 6px',
+          btnStyle: 'flex: none; padding: 5px; border: 0; border-radius: 12px; cursor: pointer; background: ' + (sel ? '#151515' : 'transparent')
+        };
+      }),
+      aspects: ASPECTS.map(function (a, i) {
+        var sel = S.aspect === i;
+        return {
+          label: a[0], checked: sel ? 'true' : 'false',
+          pick: function () { self.setState({ aspect: i }); },
+          style: 'flex: none; height: 44px; padding: 0 18px; border: 0; border-radius: 22px; cursor: pointer; font: 600 14px/20px Figtree, sans-serif; background: ' + (sel ? '#151515' : '#FBF8F3') + '; color: ' + (sel ? '#FFFFFF' : '#151515')
+        };
+      }),
+      steppers: [this.stepper('gutter', 'Gutter', 4, 0, 80), this.stepper('margin', 'Margin', 8, 0, 160), this.stepper('slant', 'Slant', 25, 0, 200, '%')],
+      styles: [['paper', 'Paper', '#FFFFFF', '#D7CFC2'], ['ink', 'Ink', '#FBF8F3', '#151515'], ['palette', 'Palette', '#E4572E', '#151515']].map(function (s) {
+        var sel = S.style === s[0];
+        return {
+          label: s[1], checked: sel ? 'true' : 'false',
+          pick: function () { self.setState({ style: s[0] }); },
+          style: 'height: 48px; border: 0; border-radius: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font: 600 14px/20px Figtree, sans-serif; background: ' + (sel ? '#151515' : 'transparent') + '; color: ' + (sel ? '#FFFFFF' : '#151515'),
+          dot: 'width: 16px; height: 16px; border-radius: 50%; background: ' + s[2] + '; box-shadow: inset 0 0 0 4px ' + s[3] + ', 0 0 0 1.5px ' + (sel ? '#FFFFFF' : '#D7CFC2')
+        };
+      }),
+      savePng: function () { self.say(name + ' saved as PNG'); },
+      saveSvg: function () { self.say(name + ' saved as SVG'); }
+    };
+  }
+}
+</script>
+</body>
+</html>
