@@ -177,8 +177,8 @@
     <section class="section-card">
       <h2>3. NETWORK USAGE</h2>
       <ul>
-        <li><strong>Google Fonts only:</strong> Palettez connects exclusively via HTTPS (<code>cleartextTrafficPermitted=false</code>) to official Google Fonts hosts: <code>fonts.google.com</code>, <code>fonts.googleapis.com</code>, and <code>fonts.gstatic.com</code>.</li>
-        <li><strong>No identifiers:</strong> Requests fetch the public font catalog and <code>.ttf</code> font files you choose to preview or download, carrying zero user or device identifiers.</li>
+        <li><strong>Google Fonts &amp; static update check:</strong> Palettez connects exclusively via HTTPS (<code>cleartextTrafficPermitted=false</code>) to official Google Fonts hosts (<code>fonts.google.com</code>, <code>fonts.googleapis.com</code>, <code>fonts.gstatic.com</code>) and our static GitHub Pages version manifest (<code>chasetech56.github.io/Palettez/version.json</code>) to check for new app releases.</li>
+        <li><strong>No identifiers:</strong> Requests fetch only the public font catalog, <code>.ttf</code> font files you preview or download, and the static version JSON, carrying zero user or device identifiers.</li>
       </ul>
     </section>
 

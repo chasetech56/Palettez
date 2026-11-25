@@ -21,9 +21,10 @@
 ---
 
 ### 3. Network Usage
-- **Google Fonts Metadata & Previews**: Palettez connects to the internet solely via encrypted HTTPS to official Google Fonts endpoints (`fonts.google.com` and `fonts.gstatic.com`).
+- **Google Fonts Metadata & Previews**: Palettez connects to the internet solely via encrypted HTTPS to official Google Fonts endpoints (`fonts.google.com` and `fonts.gstatic.com`) and our static GitHub Pages release manifest (`chasetech56.github.io/Palettez/version.json`).
   - Fetches the open font catalog and typeface metadata.
   - Downloads `.ttf` font files that you explicitly preview, save, or export.
+  - Checks if a newer Palettez APK build is available (carrying zero user or device identifiers).
 - Palettez initiates **no network requests** to any other host or domain.
 
 ---

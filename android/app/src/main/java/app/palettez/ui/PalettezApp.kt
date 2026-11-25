@@ -18,6 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,6 +37,9 @@ import app.palettez.ui.components.PalettezTab
 import app.palettez.ui.components.PalettezToastHost
 import app.palettez.ui.components.PalettezToastHostState
 import app.palettez.ui.theme.PalettezTheme
+import app.palettez.update.RemoteReleaseInfo
+import app.palettez.update.UpdateAvailableDialog
+import app.palettez.update.UpdateChecker
 import app.palettez.update.WhatsNewDialog
 import app.palettez.update.WhatsNewRegistry
 import app.palettez.util.LocalMessenger
@@ -55,22 +60,31 @@ fun PalettezApp(
     var showSettings by rememberSaveable { mutableStateOf(false) }
     var showReplayIntro by rememberSaveable { mutableStateOf(false) }
     var showWhatsNew by rememberSaveable { mutableStateOf(false) }
+    var availableUpdate by remember { mutableStateOf<RemoteReleaseInfo?>(null) }
     val toastState = remember { PalettezToastHostState() }
     val scope = rememberCoroutineScope()
 
-    // Automatic update detection (WN-1)
+    fun getCurrentVersionCode(): Int = try {
+        val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) pInfo.longVersionCode.toInt() else @Suppress("DEPRECATION") pInfo.versionCode
+    } catch (_: Exception) {
+        WhatsNewRegistry.getLatestRelease().versionCode
+    }
+
+    // Automatic local changelog + remote homepage update detection (WN-1, WN-7)
     LaunchedEffect(Unit) {
         val prefs = context.getSharedPreferences("palettez_updates", Context.MODE_PRIVATE)
         val lastSeenVersion = prefs.getInt("last_seen_version_code", 0)
-        val currentVersionCode = try {
-            val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) pInfo.longVersionCode.toInt() else pInfo.versionCode
-        } catch (e: Exception) {
-            WhatsNewRegistry.getLatestRelease().versionCode
-        }
+        val currentVersionCode = getCurrentVersionCode()
 
         if (lastSeenVersion < currentVersionCode) {
             showWhatsNew = true
+        }
+
+        val dismissedRemote = prefs.getInt("dismissed_remote_version_code", 0)
+        val remote = UpdateChecker.checkForUpdate(currentVersionCode)
+        if (remote != null && remote.versionCode > dismissedRemote) {
+            availableUpdate = remote
         }
     }
 
@@ -131,6 +145,17 @@ fun PalettezApp(
                     },
                     onOpenWhatsNew = {
                         showWhatsNew = true
+                    },
+                    onCheckForUpdates = {
+                        scope.launch {
+                            toastState.show("Checking for updates…")
+                            val remote = UpdateChecker.checkForUpdate(getCurrentVersionCode())
+                            if (remote != null) {
+                                availableUpdate = remote
+                            } else {
+                                toastState.show("You're on the latest build!")
+                            }
+                        }
                     }
                 )
             } else {
@@ -180,13 +205,25 @@ fun PalettezApp(
                     onDismiss = {
                         showWhatsNew = false
                         val prefs = context.getSharedPreferences("palettez_updates", Context.MODE_PRIVATE)
-                        val currentVersionCode = try {
-                            val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) pInfo.longVersionCode.toInt() else pInfo.versionCode
-                        } catch (e: Exception) {
-                            WhatsNewRegistry.getLatestRelease().versionCode
+                        prefs.edit().putInt("last_seen_version_code", getCurrentVersionCode()).apply()
+                    }
+                )
+            } else if (availableUpdate != null && settings.onboardingDone) {
+                val remote = availableUpdate!!
+                UpdateAvailableDialog(
+                    remote = remote,
+                    onDownloadClick = {
+                        val prefs = context.getSharedPreferences("palettez_updates", Context.MODE_PRIVATE)
+                        prefs.edit().putInt("dismissed_remote_version_code", remote.versionCode).apply()
+                        availableUpdate = null
+                        runCatching {
+                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(remote.homepageUrl)))
                         }
-                        prefs.edit().putInt("last_seen_version_code", currentVersionCode).apply()
+                    },
+                    onDismiss = {
+                        val prefs = context.getSharedPreferences("palettez_updates", Context.MODE_PRIVATE)
+                        prefs.edit().putInt("dismissed_remote_version_code", remote.versionCode).apply()
+                        availableUpdate = null
                     }
                 )
             }

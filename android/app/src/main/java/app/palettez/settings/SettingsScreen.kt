@@ -67,6 +67,7 @@ fun SettingsScreen(
     onBack: () -> Unit,
     onReplayIntro: () -> Unit,
     onOpenWhatsNew: () -> Unit = {},
+    onCheckForUpdates: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -585,6 +586,34 @@ fun SettingsScreen(
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.Default.ChevronRight,
+                        contentDescription = null,
+                        tint = colors.ink
+                    )
+                }
+
+                HorizontalDivider(color = colors.line.copy(alpha = 0.5f))
+
+                // Check for updates (WN-7)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .clickable { onCheckForUpdates() },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Check for updates",
+                        style = typography.body.copy(fontWeight = FontWeight.SemiBold, fontSize = 16.sp),
+                        color = colors.ink,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = "chasetech56.github.io",
+                        style = typography.caption.copy(color = colors.inkSecondary, fontSize = 12.sp),
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
                     Icon(
                         imageVector = Icons.Default.ChevronRight,
                         contentDescription = null,

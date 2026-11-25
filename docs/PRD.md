@@ -336,6 +336,8 @@ An automated release celebration dialog that congratulates users on running the 
 | WN-4 | Dismissal & state persistence: Tapping "EXPLORE NEW FEATURES" or close dismisses the modal and updates `last_seen_version_code = currentVersionCode` so it does not reappear until the next release.              | Dialog does not re-trigger on subsequent app launches                  |
 | WN-5 | On-demand access in Settings: Users can revisit release notes anytime via Settings → About → "What's New in Palettez", opening the dialog on demand.                                                                | Settings entry reliably displays the current release changelog         |
 | WN-6 | 100% offline & local-first: Changelog and version registry are embedded in the APK with zero network telemetry or external server dependency.                                                                        | Works seamlessly offline and in airplane mode                          |
+| WN-7 | Automatic update check: On launch (when online) or via Settings → About → "Check for updates", fetches static `https://chasetech56.github.io/Palettez/version.json` (zero identifiers). If `remote.versionCode > currentVersionCode`, surfaces an update modal. | Update prompt appears when a newer build is published on GitHub Pages  |
+| WN-8 | Safe browser download: Tapping "Download Update" opens `https://chasetech56.github.io/Palettez/` in the system browser without declaring `REQUEST_INSTALL_PACKAGES`.                                                | Manifest keeps `INTERNET` only; browser opens the download page cleanly |
 
 ## Technical architecture
 
