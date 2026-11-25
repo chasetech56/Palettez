@@ -42,6 +42,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.core.content.pm.PackageInfoCompat
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -627,7 +628,7 @@ fun SettingsScreen(
                 val appVersion = remember {
                     try {
                         val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-                        val code = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) pInfo.longVersionCode else pInfo.versionCode
+                        val code = PackageInfoCompat.getLongVersionCode(pInfo)
                         "${pInfo.versionName} (Build $code)"
                     } catch (e: Exception) {
                         "1.1.0 (Build 2)"

@@ -25,14 +25,17 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.automirrored.outlined.ViewQuilt
 import androidx.compose.material.icons.outlined.GridView
-import androidx.compose.material.icons.outlined.ViewQuilt
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,8 +64,9 @@ fun GridAnalysisDialog(
     val typography = PalettezTheme.typography
 
     // Compute analysis on background thread
-    val analysisResult by produceState<GridAnalysisResult?>(initialValue = null, bitmap) {
-        value = withContext(Dispatchers.Default) {
+    var analysisResult by remember(bitmap) { mutableStateOf<GridAnalysisResult?>(null) }
+    LaunchedEffect(bitmap) {
+        analysisResult = withContext(Dispatchers.Default) {
             GridAnalysisEngine.analyze(bitmap)
         }
     }
@@ -275,7 +279,7 @@ fun GridAnalysisDialog(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Outlined.ViewQuilt,
+                                    imageVector = Icons.AutoMirrored.Outlined.ViewQuilt,
                                     contentDescription = null,
                                     tint = colors.ink,
                                     modifier = Modifier.size(20.dp)

@@ -884,7 +884,7 @@
             </span>
             <span class="spec-item">
               <button class="sha-btn" id="copy-sha-btn" title="Click to copy SHA-256 checksum">
-                <span>SHA-256: fd04bd...</span>
+                <span>SHA-256: 414f96...</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
               </button>
             </span>
@@ -1119,7 +1119,7 @@
 
       // 3. SHA-256 Copy
       const copyShaBtn = document.getElementById('copy-sha-btn');
-      const SHA256_HASH = 'fd04bd7cc17c6145eac0cd2fa8a502f1f653f8671531378e3dab40d895977206';
+      const SHA256_HASH = '414f969522abd6963337fe2e60bbff59e79c7719fcd62bdb86e3d66823dfaacc';
       copyShaBtn.addEventListener('click', () => {
         navigator.clipboard.writeText(SHA256_HASH).then(() => {
           showToast('Copied SHA-256 hash to clipboard');

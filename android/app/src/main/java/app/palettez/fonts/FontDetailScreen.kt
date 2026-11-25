@@ -41,7 +41,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -115,8 +115,9 @@ fun FontDetailScreen(
     }
 
     // Hero preview typeface (Regular 400 or closest available)
-    val heroTypeface by produceState<Typeface?>(initialValue = loader.peek(font.family, font.previewStyle), font) {
-        value = loader.load(font.family, font.previewStyle)
+    var heroTypeface by remember(font) { mutableStateOf(loader.peek(font.family, font.previewStyle)) }
+    LaunchedEffect(font) {
+        if (heroTypeface == null) heroTypeface = loader.load(font.family, font.previewStyle)
     }
     val heroFontFamily = remember(heroTypeface) {
         heroTypeface?.let { FontFamily(it) } ?: fallbackFamily
@@ -145,15 +146,17 @@ fun FontDetailScreen(
     val headlineFont = if (!isRoleSwapped) font else (companionFont ?: font)
     val bodyFont = if (!isRoleSwapped) (companionFont ?: font) else font
 
-    val headlineTypeface by produceState<Typeface?>(initialValue = loader.peek(headlineFont.family, headlineFont.previewStyle), headlineFont) {
-        value = loader.load(headlineFont.family, headlineFont.previewStyle)
+    var headlineTypeface by remember(headlineFont) { mutableStateOf(loader.peek(headlineFont.family, headlineFont.previewStyle)) }
+    LaunchedEffect(headlineFont) {
+        if (headlineTypeface == null) headlineTypeface = loader.load(headlineFont.family, headlineFont.previewStyle)
     }
     val headlineFontFamily = remember(headlineTypeface) {
         headlineTypeface?.let { FontFamily(it) } ?: fallbackFamily
     }
 
-    val bodyTypeface by produceState<Typeface?>(initialValue = loader.peek(bodyFont.family, bodyFont.previewStyle), bodyFont) {
-        value = loader.load(bodyFont.family, bodyFont.previewStyle)
+    var bodyTypeface by remember(bodyFont) { mutableStateOf(loader.peek(bodyFont.family, bodyFont.previewStyle)) }
+    LaunchedEffect(bodyFont) {
+        if (bodyTypeface == null) bodyTypeface = loader.load(bodyFont.family, bodyFont.previewStyle)
     }
     val bodyFontFamily = remember(bodyTypeface) {
         bodyTypeface?.let { FontFamily(it) } ?: fallbackFamily
@@ -1015,8 +1018,9 @@ private fun StyleSpecimenRow(
     loader: FontLoader,
     onSaveStyle: () -> Unit,
 ) {
-    val styleTypeface by produceState<Typeface?>(initialValue = loader.peek(font.family, style), font, style) {
-        value = loader.load(font.family, style)
+    var styleTypeface by remember(font, style) { mutableStateOf(loader.peek(font.family, style)) }
+    LaunchedEffect(font, style) {
+        if (styleTypeface == null) styleTypeface = loader.load(font.family, style)
     }
     val fallbackFamily = remember(font.category) {
         when (font.category) {

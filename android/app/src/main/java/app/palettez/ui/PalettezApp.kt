@@ -23,6 +23,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.core.content.pm.PackageInfoCompat
 import app.palettez.fonts.FontsScreen
 import app.palettez.fonts.FontsViewModel
 import app.palettez.grid.GridScreen
@@ -66,7 +67,7 @@ fun PalettezApp(
 
     fun getCurrentVersionCode(): Int = try {
         val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) pInfo.longVersionCode.toInt() else @Suppress("DEPRECATION") pInfo.versionCode
+        PackageInfoCompat.getLongVersionCode(pInfo).toInt()
     } catch (_: Exception) {
         WhatsNewRegistry.getLatestRelease().versionCode
     }

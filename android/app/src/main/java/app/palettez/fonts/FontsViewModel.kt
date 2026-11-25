@@ -30,26 +30,37 @@ class FontsViewModel(app: Application) : AndroidViewModel(app) {
     var previewText by mutableStateOf("The quick brown fox jumps over the lazy dog")
     var previewSize by mutableFloatStateOf(30f)
     var currentWindowDays by mutableStateOf(60)
+    private var initialRefreshChecked = false
 
     init {
         viewModelScope.launch {
-            catalog.cached()?.let { fonts = it; updateStatus(fromCache = true, windowDays = currentWindowDays) }
-            refresh(force = true) // pick up newly released families every time the app opens
+            catalog.cached(currentWindowDays)?.let {
+                fonts = it
+                updateStatus(fromCache = true, windowDays = currentWindowDays)
+            }
         }
     }
 
     fun applySettings(refreshOnOpen: Boolean, windowDays: Int) {
         currentWindowDays = windowDays
         val today = LocalDate.now()
-        fonts = fonts.map { font ->
-            val isNew = runCatching {
-                ChronoUnit.DAYS.between(LocalDate.parse(font.dateAdded.take(10)), today) <= windowDays
-            }.getOrDefault(false)
-            font.copy(isNew = isNew)
+        if (fonts.isNotEmpty()) {
+            fonts = fonts.map { font ->
+                val isNew = runCatching {
+                    ChronoUnit.DAYS.between(LocalDate.parse(font.dateAdded.take(10)), today) <= windowDays
+                }.getOrDefault(false)
+                font.copy(isNew = isNew)
+            }
+            updateStatus(fromCache = true, windowDays = windowDays)
         }
-        updateStatus(fromCache = true, windowDays = windowDays)
-        if (refreshOnOpen && fonts.isEmpty()) {
-            refresh(force = true, windowDays = windowDays)
+        // SE-4: Respect "Update font list on open"; only hit network automatically if enabled
+        if (!initialRefreshChecked) {
+            initialRefreshChecked = true
+            if (refreshOnOpen) {
+                refresh(force = true, windowDays = windowDays)
+            } else if (fonts.isEmpty()) {
+                status = "Offline cache empty — tap refresh to download Google Fonts."
+            }
         }
     }
 
@@ -83,7 +94,8 @@ class FontsViewModel(app: Application) : AndroidViewModel(app) {
     fun visible(): List<FontInfo> {
         val q = query.trim()
         val list = fonts.filter {
-            (category == FontCategory.All || it.category == category) && (q.isEmpty() || it.family.contains(q, ignoreCase = true))
+            (category == FontCategory.All || it.category == category) &&
+                (q.isEmpty() || it.family.contains(q, ignoreCase = true) || it.category.label.contains(q, ignoreCase = true))
         }
         return when (sort) {
             FontSort.Newest -> list.sortedWith(compareByDescending<FontInfo> { it.dateAdded }.thenBy { it.popularity })

@@ -168,16 +168,35 @@ class FontLoader(context: Context) {
     suspend fun load(family: String, style: FontStyle): Typeface? {
         val key = key(family, style)
         memory[key]?.let { return it }
+        if (failed.contains(key)) return null
         return limit.withPermit {
             withContext(Dispatchers.IO) {
                 memory[key] ?: runCatching {
                     val f = fileFor(family, style)
-                    if (!f.exists() || f.length() == 0L) download(family, style, f)
+                    if (!f.exists() || f.length() == 0L) {
+                        download(family, style, f)
+                        evictIfNeeded()
+                    } else {
+                        f.setLastModified(System.currentTimeMillis())
+                    }
                     Typeface.createFromFile(f).also { memory[key] = it }
                 }.onFailure {
+                    failed.add(key)
                     fileFor(family, style).delete()
                 }.getOrNull()
             }
+        }
+    }
+
+    /** PRD non-functional: cap font cache at 200 MB, evicting oldest files first. */
+    private fun evictIfNeeded(maxBytes: Long = 200L * 1024 * 1024) {
+        val files = dir.listFiles()?.filter { it.isFile } ?: return
+        var total = files.sumOf { it.length() }
+        if (total <= maxBytes) return
+        for (file in files.sortedBy { it.lastModified() }) {
+            if (total <= maxBytes) break
+            val len = file.length()
+            if (file.delete()) total -= len
         }
     }
 

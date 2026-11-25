@@ -413,8 +413,9 @@ private fun FontPreviewCard(
     loader: FontLoader,
     onClick: () -> Unit,
 ) {
-    val typeface by produceState<Typeface?>(initialValue = loader.peek(font.family, font.previewStyle), font) {
-        value = loader.load(font.family, font.previewStyle)
+    var typeface by remember(font) { mutableStateOf(loader.peek(font.family, font.previewStyle)) }
+    LaunchedEffect(font) {
+        if (typeface == null) typeface = loader.load(font.family, font.previewStyle)
     }
     val fallbackFamily = remember(font.category) {
         when (font.category) {
