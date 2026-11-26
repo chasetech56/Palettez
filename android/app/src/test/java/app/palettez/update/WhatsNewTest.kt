@@ -11,8 +11,8 @@ class WhatsNewTest {
     fun WN1_latestReleaseIsRegistered() {
         val latest = WhatsNewRegistry.getLatestRelease()
         assertNotNull("Latest release note must exist", latest)
-        assertEquals(2, latest.versionCode)
-        assertEquals("1.1.0", latest.versionName)
+        assertEquals(3, latest.versionCode)
+        assertEquals("1.2.0", latest.versionName)
         assertTrue("Headline must not be empty", latest.headline.isNotEmpty())
         assertTrue("Release must contain highlights", latest.items.isNotEmpty())
     }
@@ -22,15 +22,15 @@ class WhatsNewTest {
         val latest = WhatsNewRegistry.getLatestRelease()
         val hasNew = latest.items.any { it.tag == ChangeTag.New }
         val hasImproved = latest.items.any { it.tag == ChangeTag.Improved }
+        val hasFixed = latest.items.any { it.tag == ChangeTag.Fixed }
 
         assertTrue("Release should highlight brand new features", hasNew)
         assertTrue("Release should highlight improvements", hasImproved)
+        assertTrue("Release should highlight fixes", hasFixed)
 
-        // Check key features in v1.1.0
         val titles = latest.items.map { it.title }
-        assertTrue(titles.any { it.contains("Grid Analysis") })
-        assertTrue(titles.any { it.contains("Brand Identity") })
-        assertTrue(titles.any { it.contains("Font Pairing") })
+        assertTrue(titles.any { it.contains("Backup") })
+        assertTrue(titles.any { it.contains("Updates") })
     }
 
     @Test
@@ -40,5 +40,8 @@ class WhatsNewTest {
 
         val v2 = WhatsNewRegistry.getReleaseForVersion(2)
         assertEquals("1.1.0", v2.versionName)
+
+        val v3 = WhatsNewRegistry.getReleaseForVersion(3)
+        assertEquals("1.2.0", v3.versionName)
     }
 }

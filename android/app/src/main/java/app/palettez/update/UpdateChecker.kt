@@ -2,6 +2,7 @@ package app.palettez.update
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -15,9 +16,16 @@ data class RemoteReleaseInfo(
     val releaseNotes: List<String>,
 )
 
+sealed class UpdateCheckResult {
+    data class UpdateAvailable(val info: RemoteReleaseInfo) : UpdateCheckResult()
+    data object UpToDate : UpdateCheckResult()
+    data class Error(val reason: String) : UpdateCheckResult()
+}
+
 /**
  * Checks the static GitHub Pages manifest (`version.json`) over HTTPS (WN-7, WN-8).
- * Carries zero user or device identifiers and fails silently when offline.
+ * Uses cache-busting + FORCE_NETWORK so GitHub Pages CDN never serves stale versions.
+ * Carries zero user or device identifiers.
  */
 object UpdateChecker {
 
@@ -26,8 +34,8 @@ object UpdateChecker {
 
     private val client: OkHttpClient by lazy {
         OkHttpClient.Builder()
-            .connectTimeout(5, TimeUnit.SECONDS)
-            .readTimeout(5, TimeUnit.SECONDS)
+            .connectTimeout(6, TimeUnit.SECONDS)
+            .readTimeout(6, TimeUnit.SECONDS)
             .build()
     }
 
@@ -70,24 +78,42 @@ object UpdateChecker {
         return remote != null && remote.versionCode > currentVersionCode
     }
 
-    /**
-     * Fetches the remote manifest on [Dispatchers.IO].
-     * Returns [RemoteReleaseInfo] if a newer build is available, or null otherwise.
-     */
-    suspend fun checkForUpdate(currentVersionCode: Int): RemoteReleaseInfo? = withContext(Dispatchers.IO) {
+    suspend fun checkDetailed(currentVersionCode: Int): UpdateCheckResult = withContext(Dispatchers.IO) {
         try {
+            // Append minute-bucket cache buster so GitHub Pages CDN edge nodes serve fresh JSON
+            val bust = System.currentTimeMillis() / 60_000L
             val request = Request.Builder()
-                .url(VERSION_MANIFEST_URL)
-                .header("Cache-Control", "no-cache")
+                .url("$VERSION_MANIFEST_URL?t=$bust")
+                .cacheControl(CacheControl.FORCE_NETWORK)
+                .header("Cache-Control", "no-cache, no-store")
+                .header("Pragma", "no-cache")
                 .build()
             client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) return@withContext null
-                val body = response.body?.string() ?: return@withContext null
+                if (!response.isSuccessful) {
+                    return@withContext UpdateCheckResult.Error("HTTP ${response.code}")
+                }
+                val body = response.body?.string()
+                    ?: return@withContext UpdateCheckResult.Error("Empty manifest")
                 val parsed = parseManifest(body)
-                if (isUpdateAvailable(currentVersionCode, parsed)) parsed else null
+                    ?: return@withContext UpdateCheckResult.Error("Invalid manifest")
+                if (isUpdateAvailable(currentVersionCode, parsed)) {
+                    UpdateCheckResult.UpdateAvailable(parsed)
+                } else {
+                    UpdateCheckResult.UpToDate
+                }
             }
-        } catch (_: Exception) {
-            null
+        } catch (e: Exception) {
+            UpdateCheckResult.Error(e.message ?: "Offline")
+        }
+    }
+
+    /**
+     * Convenience wrapper for background checks: returns [RemoteReleaseInfo] if newer, else null.
+     */
+    suspend fun checkForUpdate(currentVersionCode: Int): RemoteReleaseInfo? {
+        return when (val result = checkDetailed(currentVersionCode)) {
+            is UpdateCheckResult.UpdateAvailable -> result.info
+            else -> null
         }
     }
 }

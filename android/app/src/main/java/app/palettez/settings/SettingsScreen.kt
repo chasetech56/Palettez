@@ -700,7 +700,7 @@ fun SettingsScreen(
                             .padding(horizontal = 8.dp, vertical = 2.dp)
                     ) {
                         Text(
-                            text = "v1.1",
+                            text = "v1.2",
                             style = typography.caption.copy(color = Color(0xFF151515), fontWeight = FontWeight.Bold, fontSize = 11.sp)
                         )
                     }

@@ -24,6 +24,34 @@ object WhatsNewRegistry {
 
     val RELEASES = listOf(
         ReleaseNote(
+            versionCode = 3,
+            versionName = "1.2.0",
+            releaseDate = "November 2026",
+            headline = "You're on the latest build! Here is what's new & fixed in Palettez:",
+            items = listOf(
+                ReleaseItem(
+                    title = "Local Backup & Restore",
+                    description = "Export your saved palettes, grid settings, and preferences as a local JSON file via Storage Access Framework, and restore anytime.",
+                    tag = ChangeTag.New
+                ),
+                ReleaseItem(
+                    title = "Automatic Homepage Updates",
+                    description = "Palettez checks chasetech56.github.io/Palettez on launch and resume, and lets you check manually in Settings → About.",
+                    tag = ChangeTag.New
+                ),
+                ReleaseItem(
+                    title = "Font Refresh & Category Search",
+                    description = "Respects 'Update font list on open' when disabled, and searches both family names and font categories (Sans, Serif, Mono).",
+                    tag = ChangeTag.Fixed
+                ),
+                ReleaseItem(
+                    title = "200 MB Font Cache LRU & Stability",
+                    description = "Automatic oldest-first eviction keeps cached .ttf files under 200 MB, with failed-download backoff and zero Lint errors.",
+                    tag = ChangeTag.Improved
+                )
+            )
+        ),
+        ReleaseNote(
             versionCode = 2,
             versionName = "1.1.0",
             releaseDate = "November 2026",

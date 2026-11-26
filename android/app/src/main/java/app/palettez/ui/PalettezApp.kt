@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,6 +23,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.core.content.pm.PackageInfoCompat
 import app.palettez.fonts.FontsScreen
@@ -40,6 +44,7 @@ import app.palettez.ui.components.PalettezToastHostState
 import app.palettez.ui.theme.PalettezTheme
 import app.palettez.update.RemoteReleaseInfo
 import app.palettez.update.UpdateAvailableDialog
+import app.palettez.update.UpdateCheckResult
 import app.palettez.update.UpdateChecker
 import app.palettez.update.WhatsNewDialog
 import app.palettez.update.WhatsNewRegistry
@@ -84,9 +89,34 @@ fun PalettezApp(
 
         val dismissedRemote = prefs.getInt("dismissed_remote_version_code", 0)
         val remote = UpdateChecker.checkForUpdate(currentVersionCode)
+        prefs.edit().putLong("last_update_check_ms", System.currentTimeMillis()).apply()
         if (remote != null && remote.versionCode > dismissedRemote) {
             availableUpdate = remote
         }
+    }
+
+    // Re-check for updates on foreground resume (throttled to every 15 minutes)
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                val prefs = context.getSharedPreferences("palettez_updates", Context.MODE_PRIVATE)
+                val lastCheck = prefs.getLong("last_update_check_ms", 0L)
+                if (System.currentTimeMillis() - lastCheck >= 15 * 60_000L) {
+                    scope.launch {
+                        val currentVersionCode = getCurrentVersionCode()
+                        val dismissedRemote = prefs.getInt("dismissed_remote_version_code", 0)
+                        val remote = UpdateChecker.checkForUpdate(currentVersionCode)
+                        prefs.edit().putLong("last_update_check_ms", System.currentTimeMillis()).apply()
+                        if (remote != null && remote.versionCode > dismissedRemote) {
+                            availableUpdate = remote
+                        }
+                    }
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     val messenger: (String) -> Unit = { msg ->
@@ -150,11 +180,16 @@ fun PalettezApp(
                     onCheckForUpdates = {
                         scope.launch {
                             toastState.show("Checking for updates…")
-                            val remote = UpdateChecker.checkForUpdate(getCurrentVersionCode())
-                            if (remote != null) {
-                                availableUpdate = remote
-                            } else {
-                                toastState.show("You're on the latest build!")
+                            when (val result = UpdateChecker.checkDetailed(getCurrentVersionCode())) {
+                                is UpdateCheckResult.UpdateAvailable -> {
+                                    availableUpdate = result.info
+                                }
+                                UpdateCheckResult.UpToDate -> {
+                                    toastState.show("You're on the latest build!")
+                                }
+                                is UpdateCheckResult.Error -> {
+                                    toastState.show("Couldn't reach update server")
+                                }
                             }
                         }
                     },
