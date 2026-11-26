@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://chasetech56.github.io/Palettez/sitemap.xml
