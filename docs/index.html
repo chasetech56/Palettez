@@ -1127,6 +1127,190 @@
       color: var(--ink-muted);
       line-height: 1.5;
     }
+
+    /* -------------------------------------------------------------
+       Fixes & Release History Tracker
+       ------------------------------------------------------------- */
+    .fixes-section {
+      padding-block: 40px 60px;
+      border-block-start: 1px solid var(--line);
+    }
+
+    .fixes-header-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      margin-block-end: 28px;
+    }
+
+    .fixes-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .fix-filter-btn {
+      background: var(--surface);
+      color: var(--ink-muted);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-pill);
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .fix-filter-btn:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .fix-filter-btn.active {
+      background: var(--ink);
+      color: var(--ground);
+      border-color: var(--ink);
+    }
+
+    .fixes-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .fix-version-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .fix-version-card:hover {
+      box-shadow: var(--shadow-soft);
+      border-color: var(--ink-muted);
+    }
+
+    .fix-card-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-block-end: 1px dashed var(--line);
+      padding-block-end: 16px;
+    }
+
+    .fix-version-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-size: 28px;
+      letter-spacing: 0.5px;
+    }
+
+    .fix-badge-latest {
+      background: var(--lime);
+      color: #151515;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .fix-version-date {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--ink-muted);
+    }
+
+    .fix-items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .fix-item {
+      background: var(--ground);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .fix-tag-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fix-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .fix-tag.tag-fix {
+      background: rgba(226, 96, 63, 0.15);
+      color: var(--coral);
+      border: 1px solid rgba(226, 96, 63, 0.3);
+    }
+
+    .fix-tag.tag-imp {
+      background: rgba(106, 88, 204, 0.15);
+      color: var(--grape);
+      border: 1px solid rgba(106, 88, 204, 0.3);
+    }
+
+    .fix-tag.tag-new {
+      background: rgba(167, 216, 110, 0.2);
+      color: #386414;
+      border: 1px solid rgba(167, 216, 110, 0.4);
+    }
+    [data-theme="dark"] .fix-tag.tag-new {
+      color: var(--lime);
+    }
+
+    .fix-item-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      letter-spacing: 0.3px;
+      margin: 0;
+    }
+
+    .fix-item-issue {
+      font-size: 13px;
+      color: var(--ink-muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .fix-item-detail {
+      font-size: 13px;
+      color: var(--ink);
+      line-height: 1.5;
+      margin: 0;
+      border-inline-start: 2px solid var(--lime);
+      padding-inline-start: 10px;
+    }
+
   </style>
 </head>
 <body>
@@ -1143,6 +1327,7 @@
       <nav aria-label="Primary navigation">
         <ul class="nav-links">
           <li><a href="#tools" class="nav-link">Four Tools</a></li>
+          <li><a href="#fixes" class="nav-link">Fixes &amp; Updates</a></li>
           <li><a href="#screens" class="nav-link">Screenshots</a></li>
           <li><a href="#specs" class="nav-link">Specifications</a></li>
           <li><a href="privacy-policy.html" class="nav-link">Privacy</a></li>
@@ -1299,6 +1484,174 @@
           <span class="wn-pill">NEW · LOCAL BACKUP</span>
           <h3 class="wn-title">Backup &amp; Auto-Updates</h3>
           <p class="wn-desc">Export and restore your palettes, grids, and settings as a single local JSON file, plus automatic homepage update checks.</p>
+        </article>
+      </div>
+    </section>
+
+
+    <!-- Release Fixes & Details Tracker -->
+    <section class="fixes-section container" id="fixes">
+      <div class="fixes-header-row">
+        <div>
+          <p class="section-subtitle">Changelog &amp; Technical Details</p>
+          <h2 class="section-title">RELEASE FIXES &amp; TRACKER</h2>
+          <p class="section-lead" style="margin-block-start: 8px;">Transparent record of all bug fixes, engine optimizations, and architectural enhancements across every update.</p>
+        </div>
+
+        <div class="fixes-filter-bar" role="tablist" aria-label="Filter releases by version">
+          <button class="fix-filter-btn active" data-version="all" role="tab" aria-selected="true">All Updates</button>
+          <button class="fix-filter-btn" data-version="v1.2.1" role="tab" aria-selected="false">v1.2.1 (Latest)</button>
+          <button class="fix-filter-btn" data-version="v1.2.0" role="tab" aria-selected="false">v1.2.0</button>
+          <button class="fix-filter-btn" data-version="v1.1.0" role="tab" aria-selected="false">v1.1.0</button>
+        </div>
+      </div>
+
+      <div class="fixes-timeline">
+        <!-- v1.2.1 -->
+        <article class="fix-version-card" data-version="v1.2.1">
+          <div class="fix-card-header">
+            <div class="fix-version-title">
+              <span>v1.2.1</span>
+              <span class="fix-badge-latest">CURRENT PRODUCTION</span>
+            </div>
+            <div class="fix-version-date">BUILD 4 &bull; NOVEMBER 2026</div>
+          </div>
+
+          <div class="fix-items-grid">
+            <div class="fix-item">
+              <div class="fix-tag-row">
+                <span class="fix-tag tag-fix">FIX &amp; REDESIGN</span>
+                <span class="badge-dot" style="background:var(--coral);" aria-hidden="true"></span>
+              </div>
+              <h3 class="fix-item-title">Distraction-Free Brand Cards</h3>
+              <p class="fix-item-issue"><strong>Issue:</strong> User-uploaded photo thumbnails cluttered the top-right corner of 16:9 and 1:1 exported presentation cards.</p>
+              <p class="fix-item-detail"><strong>Resolution:</strong> Removed reference photo thumbnail; introduced a minimalist architectural specimen badge (<code>PALETTEZ SPECIMEN</code>), 10 discrete rounded scale token segments, and structured 2-column RGB, CMYK, HSL, and OKLab metric tables.</p>
+            </div>
+
+            <div class="fix-item">
+              <div class="fix-tag-row">
+                <span class="fix-tag tag-fix">FIX &bull; CAMERA</span>
+                <span class="badge-dot" style="background:var(--coral);" aria-hidden="true"></span>
+              </div>
+              <h3 class="fix-item-title">Full-Resolution Photo Capture</h3>
+              <p class="fix-item-issue"><strong>Issue:</strong> <code>TakePicturePreview</code> returned low-resolution thumbnails (240px) insufficient for accurate color extraction.</p>
+              <p class="fix-item-detail"><strong>Resolution:</strong> Upgraded to <code>ActivityResultContracts.TakePicture()</code> with a secure <code>FileProvider</code> writing full-size images into app cache with zero manifest camera permissions.</p>
+            </div>
+
+            <div class="fix-item">
+              <div class="fix-tag-row">
+                <span class="fix-tag tag-imp">IMPROVED &bull; QA</span>
+                <span class="badge-dot" style="background:var(--grape);" aria-hidden="true"></span>
+              </div>
+              <h3 class="fix-item-title">100% PRD Requirement Coverage</h3>
+              <p class="fix-item-issue"><strong>Scope:</strong> Missing automated tests across edge cases in grid serialization, font fallbacks, and layout panel trees.</p>
+              <p class="fix-item-detail"><strong>Resolution:</strong> Implemented dedicated automated tests for all 57 requirements (PA-1..11, CS-1..10, GR-1..8, LA-1..8, FO-1..8, ON-1..5, SE-1..7) with 100% pass rate.</p>
+            </div>
+
+            <div class="fix-item">
+              <div class="fix-tag-row">
+                <span class="fix-tag tag-imp">IMPROVED &bull; ARCH</span>
+                <span class="badge-dot" style="background:var(--grape);" aria-hidden="true"></span>
+              </div>
+              <h3 class="fix-item-title">Engine Purity CI Enforcement</h3>
+              <p class="fix-item-issue"><strong>Standard:</strong> Core color and layout math must remain 100% pure Kotlin without Android framework coupling.</p>
+              <p class="fix-item-detail"><strong>Resolution:</strong> Added file-level module boundary guards and an automated CI purity script (<code>check_engine_purity.sh</code>) guaranteeing zero Android imports in ColorEngine and LayoutEngine.</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- v1.2.0 -->
+        <article class="fix-version-card" data-version="v1.2.0">
+          <div class="fix-card-header">
+            <div class="fix-version-title">
+              <span>v1.2.0</span>
+            </div>
+            <div class="fix-version-date">BUILD 3 &bull; NOVEMBER 2026</div>
+          </div>
+
+          <div class="fix-items-grid">
+            <div class="fix-item">
+              <div class="fix-tag-row">
+                <span class="fix-tag tag-fix">FIX &bull; SETTINGS</span>
+                <span class="badge-dot" style="background:var(--coral);" aria-hidden="true"></span>
+              </div>
+              <h3 class="fix-item-title">Respect Font Refresh Toggle</h3>
+              <p class="fix-item-issue"><strong>Issue:</strong> Fonts catalog forced a remote network download on cold launch even when 'Update font list on open' was disabled (SE-4).</p>
+              <p class="fix-item-detail"><strong>Resolution:</strong> Gated startup downloads strictly behind DataStore preference; added category word filtering in font search.</p>
+            </div>
+
+            <div class="fix-item">
+              <div class="fix-tag-row">
+                <span class="fix-tag tag-fix">FIX &bull; STABILITY</span>
+                <span class="badge-dot" style="background:var(--coral);" aria-hidden="true"></span>
+              </div>
+              <h3 class="fix-item-title">200 MB Font Cache LRU Eviction</h3>
+              <p class="fix-item-issue"><strong>Issue:</strong> Unbounded .ttf downloads could fill device storage; failed downloads retried indefinitely.</p>
+              <p class="fix-item-detail"><strong>Resolution:</strong> Built automated oldest-first eviction keeping font storage capped at 200 MB, added exponential backoff on failed CDN fetches, and eliminated all 6 Lint warnings.</p>
+            </div>
+
+            <div class="fix-item">
+              <div class="fix-tag-row">
+                <span class="fix-tag tag-new">NEW &bull; BACKUP</span>
+                <span class="badge-dot" style="background:var(--lime);" aria-hidden="true"></span>
+              </div>
+              <h3 class="fix-item-title">Local JSON Backup &amp; Restore</h3>
+              <p class="fix-item-issue"><strong>Feature:</strong> Users needed an offline way to migrate saved palettes, custom grids, and settings to new devices.</p>
+              <p class="fix-item-detail"><strong>Resolution:</strong> One-tap JSON export and import using Android Storage Access Framework (SAF) with zero external server dependencies.</p>
+            </div>
+
+            <div class="fix-item">
+              <div class="fix-tag-row">
+                <span class="fix-tag tag-new">NEW &bull; UPDATES</span>
+                <span class="badge-dot" style="background:var(--lime);" aria-hidden="true"></span>
+              </div>
+              <h3 class="fix-item-title">Homepage Update Tracking</h3>
+              <p class="fix-item-issue"><strong>Feature:</strong> Notify APK users of new releases without Google Play Services.</p>
+              <p class="fix-item-detail"><strong>Resolution:</strong> Automatic version check against <code>version.json</code> on launch and resume, with in-app changelog dialogs and manual checks in Settings.</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- v1.1.0 -->
+        <article class="fix-version-card" data-version="v1.1.0">
+          <div class="fix-card-header">
+            <div class="fix-version-title">
+              <span>v1.1.0</span>
+            </div>
+            <div class="fix-version-date">BUILD 2 &bull; NOVEMBER 2026</div>
+          </div>
+
+          <div class="fix-items-grid">
+            <div class="fix-item">
+              <div class="fix-tag-row">
+                <span class="fix-tag tag-new">NEW &bull; GRID</span>
+                <span class="badge-dot" style="background:var(--lime);" aria-hidden="true"></span>
+              </div>
+              <h3 class="fix-item-title">On-Device Grid Analysis</h3>
+              <p class="fix-item-issue"><strong>Feature:</strong> Reverse-engineer layout structures from editorial designs.</p>
+              <p class="fix-item-detail"><strong>Resolution:</strong> Sobel edge filtering and projection profile analysis detect column counts, margins, gutters, and layout families locally in ~80ms.</p>
+            </div>
+
+            <div class="fix-item">
+              <div class="fix-tag-row">
+                <span class="fix-tag tag-new">NEW &bull; EXPORT</span>
+                <span class="badge-dot" style="background:var(--lime);" aria-hidden="true"></span>
+              </div>
+              <h3 class="fix-item-title">Brand Identity Cards</h3>
+              <p class="fix-item-issue"><strong>Feature:</strong> Present extracted palettes for client decks.</p>
+              <p class="fix-item-detail"><strong>Resolution:</strong> High-resolution 16:9 Slide (1920×1080) and 1:1 Square (1080×1080) PNG rendering with WCAG AAA accessibility scores.</p>
+            </div>
+
+            <div class="fix-item">
+              <div class="fix-tag-row">
+                <span class="fix-tag tag-new">NEW &bull; FONTS</span>
+                <span class="badge-dot" style="background:var(--lime);" aria-hidden="true"></span>
+              </div>
+              <h3 class="fix-item-title">Split Specimen Studio</h3>
+              <p class="fix-item-issue"><strong>Feature:</strong> Test headline and body font combinations live.</p>
+              <p class="fix-item-detail"><strong>Resolution:</strong> Curated Google Fonts pairing engine with live dual typing, instant role swap (&rlarr;), and combined CSS embed export.</p>
+            </div>
+          </div>
         </article>
       </div>
     </section>
@@ -1619,10 +1972,60 @@
           tickerTime.textContent = 'just now';
 
           scheduleNextDownload();
+
+      // 6. Fixes & Updates Version Filter
+      const filterBtns = document.querySelectorAll('.fix-filter-btn');
+      const versionCards = document.querySelectorAll('.fix-version-card');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          const ver = btn.getAttribute('data-version');
+
+          versionCards.forEach(card => {
+            if (ver === 'all' || card.getAttribute('data-version') === ver) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+
         }, delay);
       }
 
       scheduleNextDownload();
+
+      // 6. Fixes & Updates Version Filter
+      const filterBtns = document.querySelectorAll('.fix-filter-btn');
+      const versionCards = document.querySelectorAll('.fix-version-card');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          const ver = btn.getAttribute('data-version');
+
+          versionCards.forEach(card => {
+            if (ver === 'all' || card.getAttribute('data-version') === ver) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+
     })();
   </script>
 </body>
