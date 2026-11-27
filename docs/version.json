@@ -3,11 +3,11 @@
   "versionName": "1.2.1",
   "downloadUrl": "https://chasetech56.github.io/Palettez/releases/palettez-v1.2.1.apk",
   "homepageUrl": "https://chasetech56.github.io/Palettez/",
-  "sha256": "13da8490fcc8ac9152e0fea00ce999bbea5a72ae85270cf31f09ac00b103d0f1",
+  "sha256": "15d611962e8d856f7160f7e7c06e98f76121f5d4fccb84997e3177b229f3c5e4",
   "releaseNotes": [
-    "Full-resolution camera photo capture straight into app cache via FileProvider",
-    "100% automated test coverage across all 57 PRD requirements",
-    "Pure Kotlin engine boundaries with CI purity verification",
-    "Golden layout calibrations matching reference engine outputs"
+    "Redesigned Brand Identity Cards: Swiss architectural specimen layout",
+    "Removed top reference image for a cleaner, distraction-free specimen",
+    "Full-resolution camera capture directly into app cache via FileProvider",
+    "100% PRD test coverage & pure Kotlin engine boundaries"
   ]
 }
