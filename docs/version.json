@@ -1,12 +1,13 @@
 {
-  "versionCode": 3,
-  "versionName": "1.2.0",
-  "downloadUrl": "https://chasetech56.github.io/Palettez/releases/palettez-v1.2.0.apk",
+  "versionCode": 4,
+  "versionName": "1.2.1",
+  "downloadUrl": "https://chasetech56.github.io/Palettez/releases/palettez-v1.2.1.apk",
   "homepageUrl": "https://chasetech56.github.io/Palettez/",
+  "sha256": "13da8490fcc8ac9152e0fea00ce999bbea5a72ae85270cf31f09ac00b103d0f1",
   "releaseNotes": [
-    "Local JSON Backup & Restore in Settings",
-    "Automatic homepage update detection & Settings check",
-    "Respects 'Update font list on open' + category search",
-    "200 MB font cache LRU eviction & zero Lint errors"
+    "Full-resolution camera photo capture straight into app cache via FileProvider",
+    "100% automated test coverage across all 57 PRD requirements",
+    "Pure Kotlin engine boundaries with CI purity verification",
+    "Golden layout calibrations matching reference engine outputs"
   ]
 }

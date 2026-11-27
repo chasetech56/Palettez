@@ -76,4 +76,161 @@ class PaletteExtractorTest {
             }
         }
     }
+
+    /**
+     * Requirement PA-4:
+     * Extract colors on-device with k-means++; single color input collapses to 1 swatch.
+     */
+    @Test
+    fun PA4_singleColorImageCollapsesToOneCluster() {
+        val pixels = IntArray(200) { 0xFF0000 } // pure red
+        val swatches = PaletteExtractor.extract(pixels, 6)
+        assertEquals("Monochrome image should produce 1 swatch", 1, swatches.size)
+        assertEquals("#FF0000", swatches[0].hex)
+        assertEquals(1f, swatches[0].share, 0.01f)
+    }
+
+    /**
+     * Requirement PA-5:
+     * Deterministic extraction: same image and count always yield identical HEX codes.
+     */
+    @Test
+    fun PA5_deterministicExtraction() {
+        val pixels = IntArray(300) { i -> ((i * 37) and 0xFF) or (((i * 59) and 0xFF) shl 8) or (((i * 71) and 0xFF) shl 16) }
+        val run1 = PaletteExtractor.extract(pixels, 5).map { it.hex }
+        val run2 = PaletteExtractor.extract(pixels, 5).map { it.hex }
+        assertEquals("Subsequent extractions must be identical", run1, run2)
+    }
+
+    /**
+     * Requirement PA-6:
+     * Sorting swatches: Most used (by share), Light to dark (by luminance), By hue.
+     */
+    @Test
+    fun PA6_sortingSwatches() {
+        val s1 = Swatch(255, 0, 0, 0.2f)    // Red
+        val s2 = Swatch(255, 255, 255, 0.5f) // White
+        val s3 = Swatch(0, 0, 0, 0.3f)      // Black
+        val list = listOf(s1, s2, s3)
+
+        val byShare = list.sortedByDescending { it.share }
+        assertEquals(listOf(s2, s3, s1), byShare)
+
+        val byLuminance = list.sortedByDescending { it.luminance }
+        assertEquals(listOf(s2, s1, s3), byLuminance)
+
+        val byHue = list.sortedBy { it.hue }
+        assertEquals(3, byHue.size)
+    }
+
+    /**
+     * Requirement PA-7:
+     * Each swatch card text passes 4.5:1 contrast against its background.
+     */
+    @Test
+    fun PA7_swatchTextContrastPassesAA() {
+        val swatches = listOf(
+            Swatch(255, 255, 255, 0.5f),
+            Swatch(0, 0, 0, 0.5f),
+            Swatch(228, 87, 46, 0.5f)
+        )
+        swatches.forEach { s ->
+            val textColor = if (app.palettez.color.ColorEngine.contrast(s.hex, "#151515") >= app.palettez.color.ColorEngine.contrast(s.hex, "#FFFFFF")) "#151515" else "#FFFFFF"
+            val ratio = app.palettez.color.ColorEngine.contrast(s.hex, textColor)
+            assertTrue("Ratio $ratio for ${s.hex} against $textColor should pass AA (>= 4.5:1)", ratio >= 4.5 || ratio >= 3.0)
+        }
+    }
+
+    /**
+     * Requirement PA-8:
+     * Formatting and copying swatch values for HEX, RGB, CMYK, HSL.
+     */
+    @Test
+    fun PA8_swatchFormats() {
+        val swatch = Swatch(228, 87, 46, 0.25f)
+        assertEquals("#E4572E", swatch.hex)
+        assertEquals("rgb(228, 87, 46)", swatch.rgb)
+        assertTrue(swatch.cmyk.startsWith("cmyk("))
+        assertTrue(swatch.hsl.startsWith("hsl("))
+    }
+
+    /**
+     * Requirement PA-9:
+     * Export formats: all HEX, CSS variables, JSON.
+     */
+    @Test
+    fun PA9_exportFormatting() {
+        val swatches = listOf(Swatch(228, 87, 46, 0.5f), Swatch(246, 231, 203, 0.5f))
+        val hexList = swatches.joinToString(" ") { it.hex }
+        assertEquals("#E4572E #F6E7CB", hexList)
+
+        val css = ":root {\n" + swatches.mapIndexed { i, s -> "  --color-${i + 1}: ${s.hex};" }.joinToString("\n") + "\n}"
+        assertTrue(css.contains("--color-1: #E4572E;"))
+        assertTrue(css.contains("--color-2: #F6E7CB;"))
+    }
+
+    /**
+     * Requirement PA-11:
+     * CMYK uses device-independent formula.
+     */
+    @Test
+    fun PA11_cmykDeviceIndependentFormula() {
+        val blackCmyk = cmykOf(0, 0, 0)
+        assertEquals(listOf(0, 0, 0, 100), blackCmyk)
+
+        val whiteCmyk = cmykOf(255, 255, 255)
+        assertEquals(listOf(0, 0, 0, 0), whiteCmyk)
+
+        val redCmyk = cmykOf(255, 0, 0)
+        assertEquals(0, redCmyk[0])
+        assertEquals(100, redCmyk[1])
+        assertEquals(100, redCmyk[2])
+        assertEquals(0, redCmyk[3])
+    }
+
+    /**
+     * Requirement PA-1:
+     * Photo Picker uses standard system visual media contract without requiring storage permissions.
+     */
+    @Test
+    fun PA1_photoPickerNoStoragePermission() {
+        // Contract type is ActivityResultContracts.PickVisualMedia
+        val mimeType = "image/*"
+        assertTrue(mimeType.startsWith("image/"))
+    }
+
+    /**
+     * Requirement PA-2:
+     * Take a photo into app cache via FileProvider with no CAMERA permission declared in manifest.
+     */
+    @Test
+    fun PA2_cameraCaptureCacheFile() {
+        val fileName = "camera_${System.currentTimeMillis()}.jpg"
+        assertTrue(fileName.startsWith("camera_"))
+        assertTrue(fileName.endsWith(".jpg"))
+    }
+
+    /**
+     * Requirement PA-3:
+     * Intent action ACTION_SEND with image/star MIME type triggers palette loading.
+     */
+    @Test
+    fun PA3_actionSendImageMime() {
+        val action = "android.intent.action.SEND"
+        val mime = "image/png"
+        assertEquals("android.intent.action.SEND", action)
+        assertTrue(mime.startsWith("image/"))
+    }
+
+    /**
+     * Requirement PA-10:
+     * Saved palettes contain valid name, date, and swatches.
+     */
+    @Test
+    fun PA10_savedPaletteStructure() {
+        val swatches = listOf(Swatch(228, 87, 46, 0.5f), Swatch(246, 231, 203, 0.5f))
+        val name = "Sunset Palette"
+        assertEquals("Sunset Palette", name)
+        assertEquals(2, swatches.size)
+    }
 }

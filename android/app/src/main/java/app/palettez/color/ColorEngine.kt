@@ -1,3 +1,4 @@
+// MODULE-BOUNDARY: This file must remain free of Android imports (core/color / core/layout)
 package app.palettez.color
 
 import kotlin.math.abs

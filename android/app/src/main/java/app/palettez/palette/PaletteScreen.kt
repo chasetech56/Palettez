@@ -104,8 +104,11 @@ fun PaletteScreen(
     val pickImage = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         uri?.let { vm.load(it) }
     }
-    val takePhoto = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bmp ->
-        bmp?.let { vm.setBitmap(it) }
+    var cameraUri by remember { mutableStateOf<android.net.Uri?>(null) }
+    val takePhoto = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success) {
+            cameraUri?.let { vm.load(it) }
+        }
     }
     val savePng = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("image/png")) { uri ->
         if (uri != null) scope.launch {
@@ -145,9 +148,18 @@ fun PaletteScreen(
                     contentDescription = "Take photo",
                     onClick = {
                         try {
-                            takePhoto.launch(null)
+                            val cameraFile = java.io.File(context.cacheDir, "camera_${System.currentTimeMillis()}.jpg")
+                            val uri = androidx.core.content.FileProvider.getUriForFile(
+                                context,
+                                "${context.packageName}.fileprovider",
+                                cameraFile
+                            )
+                            cameraUri = uri
+                            takePhoto.launch(uri)
                         } catch (e: ActivityNotFoundException) {
                             message("No camera app found")
+                        } catch (e: Exception) {
+                            message("Could not launch camera: ${e.message}")
                         }
                     },
                 )

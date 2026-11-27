@@ -7,6 +7,7 @@ import org.junit.Test
 
 class SettingsTest {
 
+    /** Requirement ON-1: Show onboarding only on first launch; store onboardingDone flag. */
     @Test
     fun ON1_onboardingDoneFlag() {
         val initialSettings = AppSettings()
@@ -16,6 +17,7 @@ class SettingsTest {
         assertTrue(completedSettings.onboardingDone)
     }
 
+    /** Requirement ON-2: Skip on screen 1, Back on 2-3, step dots show 1 of 3, 2 of 3, 3 of 3. */
     @Test
     fun ON2_stepDotsAndSkip() {
         val totalSteps = 3
@@ -27,6 +29,7 @@ class SettingsTest {
         }
     }
 
+    /** Requirement ON-3: Screen 3 offers Light / Dark / System saved to Settings. */
     @Test
     fun ON3_themeSaveAndSelection() {
         assertEquals(AppTheme.System, AppTheme.fromId("system"))
@@ -35,12 +38,14 @@ class SettingsTest {
         assertEquals(AppTheme.System, AppTheme.fromId("unknown"))
     }
 
+    /** Requirement ON-4: Screen 2 states images never leave phone. */
     @Test
     fun ON4_privacyCopy() {
         val privacyText = "Your images never leave your phone."
         assertTrue(privacyText.contains("never leave your phone"))
     }
 
+    /** Requirement ON-5: Replay intro from Settings ends back on Settings. */
     @Test
     fun ON5_replayIntroEndsOnSettings() {
         var isReplay = true
@@ -51,12 +56,14 @@ class SettingsTest {
         assertEquals("Settings", targetScreen)
     }
 
+    /** Requirement SE-1: Theme Light, Dark, System. */
     @Test
     fun SE1_themeValues() {
         val defaultSettings = AppSettings()
         assertEquals(AppTheme.System, defaultSettings.theme)
     }
 
+    /** Requirement SE-2: Palette defaults colors count 2-12 and copy format. */
     @Test
     fun SE2_paletteDefaultsClamped() {
         val defaultSettings = AppSettings()
@@ -70,18 +77,21 @@ class SettingsTest {
         assertEquals(12, clampedAbove)
     }
 
+    /** Requirement SE-3: Remember last grid on by default. */
     @Test
     fun SE3_rememberGridDefault() {
         val defaultSettings = AppSettings()
         assertTrue(defaultSettings.rememberGrid)
     }
 
+    /** Requirement SE-4: Update font list on open on by default. */
     @Test
     fun SE4_refreshFontsDefault() {
         val defaultSettings = AppSettings()
         assertTrue(defaultSettings.refreshFonts)
     }
 
+    /** Requirement SE-5: NEW tag window 30, 60, or 90 days. */
     @Test
     fun SE5_newTagWindowDays() {
         val defaultSettings = AppSettings()
@@ -93,6 +103,7 @@ class SettingsTest {
         assertTrue(allowedDays.contains(90))
     }
 
+    /** Requirement SE-6: Clear font cache frees storage. */
     @Test
     fun SE6_clearFontCache() {
         var cacheText = "1.2 MB on this phone"
@@ -101,6 +112,7 @@ class SettingsTest {
         assertEquals("No fonts saved", cacheText)
     }
 
+    /** Requirement SE-7: Privacy note, font licenses link, version. */
     @Test
     fun SE7_aboutAndVersion() {
         val version = "1.0"

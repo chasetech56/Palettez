@@ -135,4 +135,105 @@ class ColorEngineTest {
         assertTrue(json.contains("\"roles\":"))
         assertTrue(json.contains("\"scales\":"))
     }
+
+    /**
+     * Requirement CS-1:
+     * Ship 14 presets in 6 moods plus the Palettez house palette (15 total).
+     */
+    @Test
+    fun CS1_presetsVerification() {
+        assertEquals("Total preset palettes should be 15", 15, PresetPalettes.ALL.size)
+        val moods = PresetPalettes.ALL.map { it.mood }.toSet()
+        assertTrue(moods.contains("Earthy"))
+        assertTrue(moods.contains("Warm"))
+        assertTrue(moods.contains("Cool"))
+        assertTrue(moods.contains("Pastel"))
+        assertTrue(moods.contains("Bold"))
+        assertTrue(PresetPalettes.ALL.any { it.name == "Palettez" })
+
+        // Every palette has 5 or 6 colors
+        PresetPalettes.ALL.forEach { p ->
+            assertTrue("Preset ${p.name} should have 5 or 6 colors", p.colors.size in 5..6)
+            assertTrue("Colors must start with #", p.colors.all { it.startsWith("#") && it.length == 7 })
+        }
+    }
+
+    /**
+     * Requirement CS-2:
+     * Presets filtered by mood; each card shows colors, mood, and text-on-background grade.
+     */
+    @Test
+    fun CS2_presetsMoodFilter() {
+        val earthy = PresetPalettes.ALL.filter { it.mood == "Earthy" }
+        assertEquals(3, earthy.size)
+
+        PresetPalettes.ALL.forEach { p ->
+            assertTrue(p.contrastRatio >= 1.0)
+            assertTrue(p.contrastGrade in listOf("AAA", "AA", "AA Large", "Fail"))
+        }
+    }
+
+    /**
+     * Requirement CS-4:
+     * Change cycles a role through the palette colors; auto-assign resets.
+     */
+    @Test
+    fun CS4_roleCyclingAndReset() {
+        val colors = listOf("#F6E7CB", "#E4572E", "#8C5383", "#F2A65A", "#2E4057", "#1B998B")
+        val initialRoles = ColorEngine.autoRoles(colors)
+
+        // Cycling through colors for primary role
+        val primaryIdx = colors.indexOf(initialRoles.primary)
+        val nextPrimary = colors[(primaryIdx + 1) % colors.size]
+        val modifiedRoles = initialRoles.copy(primary = nextPrimary)
+        assertEquals(nextPrimary, modifiedRoles.primary)
+
+        // Auto-assign reset restores original algorithmic assignment
+        val resetRoles = ColorEngine.autoRoles(colors)
+        assertEquals(initialRoles, resetRoles)
+    }
+
+    /**
+     * Requirement CS-5:
+     * Live preview card renders background, text, primary button (ink or white label), secondary, and accent.
+     */
+    @Test
+    fun CS5_livePreviewContrastAndTokens() {
+        val roles = ColorEngine.autoRoles(PresetPalettes.ALL.first { it.name == "Sunset" }.colors)
+        val buttonLabelColor = ColorEngine.inkOn(roles.primary)
+        assertTrue(buttonLabelColor == "#151515" || buttonLabelColor == "#FFFFFF")
+
+        val textRatio = ColorEngine.contrast(roles.background, roles.text)
+        assertTrue("Text on background contrast should be valid", textRatio >= 3.0)
+    }
+
+    /**
+     * Requirement CS-10:
+     * Text on any user color is ink (#151515) or white, whichever has higher WCAG contrast.
+     */
+    @Test
+    fun CS10_inkOnContrastPreference() {
+        assertEquals("#151515", ColorEngine.inkOn("#FFFFFF"))
+        assertEquals("#FFFFFF", ColorEngine.inkOn("#000000"))
+        assertEquals("#FFFFFF", ColorEngine.inkOn("#151515"))
+        assertEquals("#151515", ColorEngine.inkOn("#F6E7CB"))
+        assertEquals("#FFFFFF", ColorEngine.inkOn("#2E4057"))
+    }
+
+    /**
+     * Requirement CS-6:
+     * Additional golden scale checks for intermediate palette colors.
+     */
+    @Test
+    fun CS6_additionalGoldenScales() {
+        val purpleScale = ColorEngine.scaleOf("#8C5383")
+        assertEquals(10, purpleScale.size)
+        assertEquals("#8C5383", purpleScale.first { it.step == 500 }.hex)
+        assertTrue(purpleScale.first { it.step == 50 }.hex.startsWith("#"))
+        assertTrue(purpleScale.first { it.step == 900 }.hex.startsWith("#"))
+
+        val tealScale = ColorEngine.scaleOf("#1B998B")
+        assertEquals(10, tealScale.size)
+        assertEquals("#1B998B", tealScale.first { it.step == 500 }.hex)
+    }
 }

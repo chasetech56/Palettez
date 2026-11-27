@@ -79,4 +79,89 @@ class LayoutEngineTest {
         assertTrue("SVG should contain panels group", svg.contains("<g id=\"panels\">"))
         assertTrue("SVG should contain polygon elements", svg.contains("<polygon id=\"panel-1\""))
     }
+
+    /**
+     * Requirement LA-2:
+     * Panel count per template matches exact design tree calculations.
+     */
+    @Test
+    fun LA2_templatePanelCountsMatchSpecs() {
+        val expectedCounts = mapOf(
+            "Tiers" to 5,
+            "Hero base" to 6,
+            "Brick" to 6,
+            "Tall left" to 3,
+            "Triptych" to 5,
+            "Ladder" to 4,
+            "Tilt" to 5,
+            "Wedge" to 3,
+            "Rush" to 5,
+            "Spotlight" to 4,
+            "Corner pop" to 4,
+            "Center stage" to 7,
+            "Spiral" to 5,
+            "Off-grid" to 6,
+            "Window" to 8,
+        )
+
+        for (template in LayoutEngine.TEMPLATES) {
+            val expected = expectedCounts[template.name]
+            assertEquals("Template ${template.name} count mismatch", expected, template.panelCount)
+        }
+    }
+
+    /**
+     * Requirement LA-3:
+     * Gutter=0 layout rendering produces continuous boundaries with no gaps.
+     */
+    @Test
+    fun LA3_renderWithZeroGutter() {
+        val template = LayoutEngine.TEMPLATES.first { it.name == "Tiers" }
+        val rendered = LayoutEngine.renderLayout(
+            template.node,
+            1000.0,
+            1000.0,
+            LayoutEngine.RenderOptions(gutter = 0.0, margin = 0.0)
+        )
+        assertEquals(5, rendered.panelCount)
+        assertTrue(rendered.items.all { it.points.isNotEmpty() })
+    }
+
+    /**
+     * Requirement LA-6:
+     * Mirror X and Mirror Y transform polygon coordinates symmetrically.
+     */
+    @Test
+    fun LA6_mirrorTransformations() {
+        val template = LayoutEngine.TEMPLATES.first { it.name == "Tilt" }
+        val normal = LayoutEngine.renderLayout(template.node, 1000.0, 1000.0, LayoutEngine.RenderOptions(mirrorX = false))
+        val mirrored = LayoutEngine.renderLayout(template.node, 1000.0, 1000.0, LayoutEngine.RenderOptions(mirrorX = true))
+
+        assertEquals(normal.panelCount, mirrored.panelCount)
+        // First point x should be flipped around page width (1000)
+        val normalX = normal.items.first().points.first().x
+        val mirroredX = mirrored.items.first().points.first().x
+        assertEquals(1000.0 - normalX, mirroredX, 1.0)
+    }
+
+    /**
+     * Requirement LA-8:
+     * Styles: paper, ink, and palette background and panel fills.
+     */
+    @Test
+    fun LA8_layoutStyles() {
+        val template = LayoutEngine.TEMPLATES.first()
+
+        val paper = LayoutEngine.renderLayout(template.node, 1000.0, 1000.0, LayoutEngine.RenderOptions(style = "paper"))
+        assertEquals("#D7CFC2", paper.backgroundColor)
+        assertTrue(paper.panelColors.all { it == "#FFFFFF" })
+
+        val ink = LayoutEngine.renderLayout(template.node, 1000.0, 1000.0, LayoutEngine.RenderOptions(style = "ink"))
+        assertEquals("#151515", ink.backgroundColor)
+        assertTrue(ink.panelColors.all { it == "#FBF8F3" })
+
+        val palette = LayoutEngine.renderLayout(template.node, 1000.0, 1000.0, LayoutEngine.RenderOptions(style = "palette"))
+        assertEquals("#151515", palette.backgroundColor)
+        assertEquals(template.panelCount, palette.panelColors.size)
+    }
 }

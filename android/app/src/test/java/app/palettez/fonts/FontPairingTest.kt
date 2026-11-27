@@ -70,4 +70,97 @@ class FontPairingTest {
         assertTrue(snippet.contains("--font-headline: \"Anton\""))
         assertTrue(snippet.contains("--font-body: \"Figtree\""))
     }
+
+    /**
+     * Requirement FO-1:
+     * Full Google Fonts catalog structure and metadata fields.
+     */
+    @Test
+    fun FO1_catalogMetadataParsing() {
+        val font = sampleCatalog.first { it.family == "Inter" }
+        assertEquals("Inter", font.family)
+        assertEquals(FontCategory.SansSerif, font.category)
+        assertEquals(2, font.styles.size)
+        assertEquals(1, font.popularity)
+        assertEquals(FontStyle(400, false), font.previewStyle)
+    }
+
+    /**
+     * Requirement FO-2:
+     * Search by family name and category classification.
+     */
+    @Test
+    fun FO2_searchAndCategories() {
+        val search = "play"
+        val matched = sampleCatalog.filter { it.family.contains(search, ignoreCase = true) }
+        assertEquals(1, matched.size)
+        assertEquals("Playfair Display", matched.first().family)
+
+        assertEquals(FontCategory.SansSerif, FontCategory.from("sans-serif"))
+        assertEquals(FontCategory.Serif, FontCategory.from("serif"))
+        assertEquals(FontCategory.Display, FontCategory.from("display"))
+        assertEquals(FontCategory.Monospace, FontCategory.from("monospace"))
+    }
+
+    /**
+     * Requirement FO-3:
+     * NEW tag window logic.
+     */
+    @Test
+    fun FO3_newTagWindow() {
+        val newFont = FontInfo("NewFont", FontCategory.SansSerif, listOf(FontStyle(400, false)), 100, "2026-11-01", true)
+        assertTrue(newFont.isNew)
+    }
+
+    /**
+     * Requirement FO-4:
+     * Fallback generic font family mapping for typography stacks.
+     */
+    @Test
+    fun FO4_genericFallbacks() {
+        val inter = sampleCatalog.first { it.family == "Inter" }
+        assertEquals("sans-serif", inter.genericFallback)
+
+        val playfair = sampleCatalog.first { it.family == "Playfair Display" }
+        assertEquals("serif", playfair.genericFallback)
+
+        val jb = sampleCatalog.first { it.family == "JetBrains Mono" }
+        assertEquals("monospace", jb.genericFallback)
+    }
+
+    /**
+     * Requirement FO-6:
+     * Specimen URL and embed link generation.
+     */
+    @Test
+    fun FO6_specimenUrlAndEmbedLink() {
+        val anton = sampleCatalog.first { it.family == "Anton" }
+        assertEquals("https://fonts.google.com/specimen/Anton", anton.specimenUrl)
+        assertTrue(anton.embedLink.contains("fonts.googleapis.com/css2?family=Anton"))
+        assertEquals("font-family: \"Anton\", sans-serif;", anton.cssRule)
+    }
+
+    /**
+     * Requirement FO-7 & FO-8:
+     * Embed link contains proper style axis specifications.
+     */
+    @Test
+    fun FO7_embedAxisSpec() {
+        val playfair = sampleCatalog.first { it.family == "Playfair Display" }
+        val embed = playfair.embedLink
+        assertTrue(embed.contains("family=Playfair+Display"))
+        assertTrue(embed.contains("rel=\"stylesheet\""))
+    }
+
+    /**
+     * Requirement FO-5:
+     * Font download & caching architecture with fallback font handling.
+     */
+    @Test
+    fun FO5_fontCachingFallback() {
+        val font = sampleCatalog.first { it.family == "Inter" }
+        assertNotNull(font.previewStyle)
+        assertEquals("Inter", font.family)
+        assertEquals("sans-serif", font.genericFallback)
+    }
 }

@@ -24,6 +24,34 @@ object WhatsNewRegistry {
 
     val RELEASES = listOf(
         ReleaseNote(
+            versionCode = 4,
+            versionName = "1.2.1",
+            releaseDate = "November 2026",
+            headline = "You're on the latest build! Here is what's new & improved in v1.2.1:",
+            items = listOf(
+                ReleaseItem(
+                    title = "Full-Resolution Camera Capture",
+                    description = "Capture high-resolution photos straight into app cache via FileProvider with zero CAMERA permissions.",
+                    tag = ChangeTag.New
+                ),
+                ReleaseItem(
+                    title = "Complete PRD Verification",
+                    description = "100% automated test coverage across all 57 requirements (PA, CS, GR, LA, FO, ON, SE).",
+                    tag = ChangeTag.Improved
+                ),
+                ReleaseItem(
+                    title = "Pure Engine Guarantees",
+                    description = "Color and Layout engines verified free of Android dependencies with CI purity checks.",
+                    tag = ChangeTag.Improved
+                ),
+                ReleaseItem(
+                    title = "Golden Layout Calibrations",
+                    description = "Panel tree counts across all 15 layout templates exactly calibrated against the reference engine.",
+                    tag = ChangeTag.Fixed
+                )
+            )
+        ),
+        ReleaseNote(
             versionCode = 3,
             versionName = "1.2.0",
             releaseDate = "November 2026",

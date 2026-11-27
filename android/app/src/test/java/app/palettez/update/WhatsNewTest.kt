@@ -11,8 +11,8 @@ class WhatsNewTest {
     fun WN1_latestReleaseIsRegistered() {
         val latest = WhatsNewRegistry.getLatestRelease()
         assertNotNull("Latest release note must exist", latest)
-        assertEquals(3, latest.versionCode)
-        assertEquals("1.2.0", latest.versionName)
+        assertEquals(4, latest.versionCode)
+        assertEquals("1.2.1", latest.versionName)
         assertTrue("Headline must not be empty", latest.headline.isNotEmpty())
         assertTrue("Release must contain highlights", latest.items.isNotEmpty())
     }
@@ -29,8 +29,8 @@ class WhatsNewTest {
         assertTrue("Release should highlight fixes", hasFixed)
 
         val titles = latest.items.map { it.title }
-        assertTrue(titles.any { it.contains("Backup") })
-        assertTrue(titles.any { it.contains("Updates") })
+        assertTrue(titles.any { it.contains("Camera") })
+        assertTrue(titles.any { it.contains("Engine") })
     }
 
     @Test
@@ -43,5 +43,8 @@ class WhatsNewTest {
 
         val v3 = WhatsNewRegistry.getReleaseForVersion(3)
         assertEquals("1.2.0", v3.versionName)
+
+        val v4 = WhatsNewRegistry.getReleaseForVersion(4)
+        assertEquals("1.2.1", v4.versionName)
     }
 }
